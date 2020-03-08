@@ -17,5 +17,7 @@
   "background": {
     "scripts": ["js/background.js"]
   },
-  "permissions": ["notifications"]
+  "permissions": ["notifications"],
+  "minimum_chrome_version": "46",
+  "content_security_policy": "script-src 'self' 'sha256-hmMd/FdixRZj3+ijA+2p6YPmboyDLwHwaGhd44SPYT8='; object-src 'self'"
 }
