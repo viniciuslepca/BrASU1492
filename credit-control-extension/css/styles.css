@@ -1,0 +1,16 @@
+body {
+    background-color: rgb(138, 5, 190);
+    width: 400px;
+    height: 600px;
+    font-family: 'Graphik-Regular','Gotham SSm A','Gotham SSm B','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+}
+
+p, h1 {
+    color: white;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
