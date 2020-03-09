@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Client Data Test</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="scriptTransaction.js"></script>
+  </head>
+  <body onload="getIds()">
+    <h1>Transactions</h1>
+    <form method="POST" action="/transactions">
+        <select id="client-ids" name="client"></select>
+        <p>Date</p><input type="text" name="date">
+        <p>Amount</p><input type="number" name="amount">
+        <p>Description</p><input type="text" name="description">
+        <p>Number of parcels</p><input type="number" name="numParcels">
+        <br/>
+        <button>Submit</button>
+    </form>
+    <hr/>
+    
+  </body>
+</html>

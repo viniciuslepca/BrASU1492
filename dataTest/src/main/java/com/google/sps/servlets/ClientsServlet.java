@@ -28,14 +28,9 @@ public class ClientsServlet extends HttpServlet {
 
     List<Client> clients = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-        log("here");
-    
         long id = entity.getKey().getId();
         String title = (String) entity.getProperty("title");
         String income = (String) entity.getProperty("income");
-
-        log(title);
-        log(income);
         Client newClient = new Client(id, title, income);
         clients.add(newClient);
     }
