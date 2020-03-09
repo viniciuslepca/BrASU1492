@@ -1,13 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-    function onclick () {
-      chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, 'hi', setCount)
-      })
-    }
+    const bg = chrome.extension.getBackgroundPage();
 
-    function setCount (res) {
-      const div = document.createElement('div')
-      div.textContent = `${res.count} bears`
-      document.body.appendChild(div)
-    }
-}, false)
+    const priceDiv = document.createElement('p');
+    priceDiv.textContent = `Item price: ${bg.price}`;
+    document.getElementById("popup-body").appendChild(priceDiv);
+}, false);

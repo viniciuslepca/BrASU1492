@@ -1,3 +1,5 @@
+window.price = "";
+
 chrome.runtime.onMessage.addListener(function (request) {
     const options = {
         type: "basic",
@@ -8,6 +10,6 @@ chrome.runtime.onMessage.addListener(function (request) {
 
     chrome.notifications.create("notifId", options, function() {console.log("Last error:", chrome.runtime.lastError);});
 
-    console.log(request.price);
+    window.price = request.price;
 });
 
