@@ -1,0 +1,20 @@
+{
+  "name": "BrASU1492",
+  "version": "1.0.0",
+  "description": "Repo for BRASA Hacks project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viniciuslepca/BrASU1492.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/viniciuslepca/BrASU1492/issues"
+  },
+  "homepage": "https://github.com/viniciuslepca/BrASU1492#readme"
+}
