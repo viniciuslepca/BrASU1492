@@ -6,7 +6,7 @@
   "icons": { "16": "images/icon16.png", "48": "images/icon48.png", "128": "images/icon128.png" },
   "content_scripts": [
     {
-      "matches": ["*://*.amazon.com/*buy*"],
+      "matches": ["*://*.amazon.com/*"],
       "js": ["js/vendor/notifications.js", "js/content.js"],
       "css": ["css/vendor/notifications.css"]
     }
