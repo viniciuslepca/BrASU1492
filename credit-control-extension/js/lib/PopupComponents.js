@@ -20,22 +20,23 @@ var PopupComponents = function (_React$Component) {
     }
 
     _createClass(PopupComponents, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             // TODO FIX THIS LATER - SHOULD BE if(this.state.bg.price !== null)
             if (this.state.bg.price !== null || true) {
                 return React.createElement(
-                    "div",
+                    'div',
                     null,
                     React.createElement(PopupTitle, null),
                     React.createElement(ItemPrice, { price: this.state.bg.price }),
-                    React.createElement(ContentBox, null)
+                    React.createElement(ContentBox, null),
+                    React.createElement(InstallmentsSlider, null)
                 );
             } else {
                 return React.createElement(
-                    "p",
+                    'p',
                     null,
-                    "Please run this extension on Amazon's checkout page"
+                    'Please run this extension on Amazon\'s checkout page'
                 );
             }
         }
@@ -54,11 +55,11 @@ var ContentBox = function (_React$Component2) {
     }
 
     _createClass(ContentBox, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             return React.createElement(
-                "div",
-                { className: "center content-box" },
+                'div',
+                { className: 'center content-box' },
                 React.createElement(InstallmentsPlot, null)
             );
         }
@@ -77,27 +78,69 @@ var InstallmentsPlot = function (_React$Component3) {
     }
 
     _createClass(InstallmentsPlot, [{
-        key: "render",
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB'],
+                    datasets: [{
+                        label: 'Future bills',
+                        data: [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0],
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    }, {
+        key: 'render',
         value: function render() {
-            return React.createElement(
-                "div",
-                { className: "graph-wrapper" },
-                React.createElement("div", { className: "graph" })
-            );
+            return React.createElement('canvas', { id: 'myChart', width: '400', height: '400' });
         }
     }]);
 
     return InstallmentsPlot;
 }(React.Component);
 
-// function Bar(left) {
-//     return (
-//         <div className="bar" style={{left: `${left}%`}}/>
-//     );
-// }
+var InstallmentsSlider = function (_React$Component4) {
+    _inherits(InstallmentsSlider, _React$Component4);
 
-var ItemPrice = function (_React$Component4) {
-    _inherits(ItemPrice, _React$Component4);
+    function InstallmentsSlider() {
+        _classCallCheck(this, InstallmentsSlider);
+
+        return _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).apply(this, arguments));
+    }
+
+    _createClass(InstallmentsSlider, [{
+        key: 'render',
+        value: function render() {
+            return React.createElement(
+                'div',
+                { className: 'slidecontainer' },
+                React.createElement('input', { type: 'range', min: '1', max: '12', value: '1', className: 'slider', id: 'installments-slider' })
+            );
+        }
+    }]);
+
+    return InstallmentsSlider;
+}(React.Component);
+
+var ItemPrice = function (_React$Component5) {
+    _inherits(ItemPrice, _React$Component5);
 
     function ItemPrice() {
         _classCallCheck(this, ItemPrice);
@@ -106,12 +149,12 @@ var ItemPrice = function (_React$Component4) {
     }
 
     _createClass(ItemPrice, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             return React.createElement(
-                "p",
+                'p',
                 null,
-                "Item price: ",
+                'Item price: ',
                 this.props.price
             );
         }
@@ -122,9 +165,9 @@ var ItemPrice = function (_React$Component4) {
 
 function PopupTitle() {
     return React.createElement(
-        "h1",
+        'h1',
         { style: { textAlign: "center" } },
-        "Nubank Credit Control Extension"
+        'Nubank Credit Control Extension'
     );
 }
 

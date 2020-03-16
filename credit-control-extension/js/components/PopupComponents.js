@@ -13,6 +13,7 @@ class PopupComponents extends React.Component {
                     <PopupTitle/>
                     <ItemPrice price={this.state.bg.price}/>
                     <ContentBox/>
+                    <InstallmentsSlider/>
                 </div>
             );
         } else {
@@ -34,24 +35,65 @@ class ContentBox extends React.Component {
 }
 
 class InstallmentsPlot extends React.Component {
+    componentDidMount() {
+        let ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB'],
+                datasets: [{
+                    label: 'Future bills',
+                    data: [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+    }
+
     render() {
         return (
-            <div className="graph-wrapper">
-                <div className="graph">
-                    {/*<Bar left={0}/>*/}
-                    {/*<Bar left={10}/>*/}
-                    {/*<Bar left={20}/>*/}
-                </div>
-            </div>
+            <canvas id="myChart" width="400" height="400"/>
         );
     }
 }
 
-// function Bar(left) {
-//     return (
-//         <div className="bar" style={{left: `${left}%`}}/>
-//     );
-// }
+class InstallmentsSlider extends React.Component {
+    render() {
+        return(
+            <div className="slidecontainer">
+                <input type="range" min="1" max="12" value="1" className="slider" id="installments-slider"/>
+            </div>
+        );
+    }
+}
 
 class ItemPrice extends React.Component {
     render() {

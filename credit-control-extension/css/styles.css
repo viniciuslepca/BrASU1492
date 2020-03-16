@@ -52,29 +52,11 @@ body::-webkit-scrollbar-track {
 
 .content-box {
     width: auto;
-    height: 200px;
+    height: 300px;
     background-color: var(--main-white);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .purple-text {
     color: var(--main-purple)
-}
-
-.graph-wrapper {
-    height: 100%;
-    width: 100%;
-}
-
-.graph {
-    position: relative;
-    height: 100%;
-}
-
-.bar {
-    position: absolute;
-    top: 10px;
-    bottom: 0;
-    width: 5px;
-    background: #e05b42;
 }
