@@ -6,3 +6,13 @@ const price = document.getElementById("subtotals-marketplace-table").getElements
 chrome.runtime.sendMessage({
     price: price
 });
+
+// chrome.runtime.onMessage.addListener(function(request, sender) {
+//     console.log(sender.tab ?
+//         "from a content script:" + sender.tab.url :
+//         "from the extension");
+//
+//     if (request.type === "getPrice") {
+//         chrome.runtime.sendMessage({price: price});
+//     }
+// });

@@ -1,12 +1,24 @@
 class PopupComponents extends React.Component {
+    constructor(props) {
+        super(props);
+        const bg = chrome.extension.getBackgroundPage();
+        this.state = {bg: bg};
+    }
+
     render() {
-        return (
-            <div>
-                {/*<script src="../popup.js"/>*/}
-                <PopupTitle/>
-                <ContentBox/>
-            </div>
-        );
+        if (this.state.bg.price !== null) {
+            return(
+                <div>
+                    <PopupTitle/>
+                    <ItemPrice price={this.state.bg.price}/>
+                    <ContentBox/>
+                </div>
+            );
+        } else {
+            return (
+                <p>This works</p>
+            );
+        }
     }
 }
 
@@ -20,8 +32,17 @@ class ContentBox extends React.Component {
     }
 }
 
+class ItemPrice extends React.Component {
+    render() {
+        return (
+            <p>Item price: {this.props.price}</p>
+        );
+    }
+
+}
+
 function PopupTitle() {
     return <h1 style={{textAlign: "center"}}>Nubank Credit Control Extension</h1>
 }
 
-ReactDOM.render(React.createElement(PopupComponents, null), document.querySelector("#popup-body"));
+ReactDOM.render(<PopupComponents/>, document.querySelector("#popup-body"));

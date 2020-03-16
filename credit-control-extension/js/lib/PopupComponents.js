@@ -9,21 +9,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var PopupComponents = function (_React$Component) {
     _inherits(PopupComponents, _React$Component);
 
-    function PopupComponents() {
+    function PopupComponents(props) {
         _classCallCheck(this, PopupComponents);
 
-        return _possibleConstructorReturn(this, (PopupComponents.__proto__ || Object.getPrototypeOf(PopupComponents)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (PopupComponents.__proto__ || Object.getPrototypeOf(PopupComponents)).call(this, props));
+
+        var bg = chrome.extension.getBackgroundPage();
+        _this.state = { bg: bg };
+        return _this;
     }
 
     _createClass(PopupComponents, [{
         key: "render",
         value: function render() {
-            return React.createElement(
-                "div",
-                null,
-                React.createElement(PopupTitle, null),
-                React.createElement(ContentBox, null)
-            );
+            if (this.state.bg.price !== null) {
+                return React.createElement(
+                    "div",
+                    null,
+                    React.createElement(PopupTitle, null),
+                    React.createElement(ItemPrice, { price: this.state.bg.price }),
+                    React.createElement(ContentBox, null)
+                );
+            } else {
+                return React.createElement(
+                    "p",
+                    null,
+                    "This works"
+                );
+            }
         }
     }]);
 
@@ -55,6 +68,30 @@ var ContentBox = function (_React$Component2) {
     }]);
 
     return ContentBox;
+}(React.Component);
+
+var ItemPrice = function (_React$Component3) {
+    _inherits(ItemPrice, _React$Component3);
+
+    function ItemPrice() {
+        _classCallCheck(this, ItemPrice);
+
+        return _possibleConstructorReturn(this, (ItemPrice.__proto__ || Object.getPrototypeOf(ItemPrice)).apply(this, arguments));
+    }
+
+    _createClass(ItemPrice, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "p",
+                null,
+                "Item price: ",
+                this.props.price
+            );
+        }
+    }]);
+
+    return ItemPrice;
 }(React.Component);
 
 function PopupTitle() {
