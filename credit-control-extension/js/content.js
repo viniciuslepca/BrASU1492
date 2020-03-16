@@ -2,37 +2,41 @@
 // const stuff = itemDetailsDiv[0].getElementsByClassName("a-text-bold");
 
 const price = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent;
+const priceVal = parseFloat(price.trim().substr(1));
 
 chrome.runtime.sendMessage({
     price: price
 });
 
-const priceNotification = window.createNotification({
-    // close on click
-    closeOnClick: false,
 
-    // displays close button
-    displayCloseButton: true,
+if (priceVal >= 30) {
+    const priceNotification = window.createNotification({
+        // close on click
+        closeOnClick: false,
 
-    // nfc-top-left
-    // nfc-bottom-right
-    // nfc-bottom-left
-    positionClass: 'nfc-top-right',
+        // displays close button
+        displayCloseButton: true,
 
-    // callback
-    onclick: false,
+        // nfc-top-left
+        // nfc-bottom-right
+        // nfc-bottom-left
+        positionClass: 'nfc-top-right',
 
-    // timeout in milliseconds
-    showDuration: 10000,
+        // callback
+        onclick: false,
 
-    // success, info, warning, error, and none
-    theme: 'info'
-});
+        // timeout in milliseconds
+        showDuration: 10000,
 
-priceNotification({
-    title: 'Wait a second!',
-    message: 'This purchase represents X% of your monthly income. Click on the Nubank extension icon to learn more about it.'
-});
+        // success, info, warning, error, and none
+        theme: 'info'
+    });
+
+    priceNotification({
+        title: 'Wait a second!',
+        message: 'This purchase represents X% of your monthly income. Click on the Nubank extension icon to learn more about it.'
+    });
+}
 
 // chrome.runtime.onMessage.addListener(function(request, sender) {
 //     console.log(sender.tab ?
