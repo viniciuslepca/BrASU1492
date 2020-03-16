@@ -1,6 +1,11 @@
 // const itemDetailsDiv = document.getElementsByClassName("a-fixed-left-grid-col item-details-right-column a-col-right");
 // const stuff = itemDetailsDiv[0].getElementsByClassName("a-text-bold");
 
+// TODO - WRITE THIS
+function shouldNotify() {
+    return true;
+}
+
 
 if (location.href.includes("/buy/")) {
     const price = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
@@ -11,7 +16,7 @@ if (location.href.includes("/buy/")) {
     });
 
 
-    if (priceVal >= 30) {
+    if (shouldNotify()) {
         const priceNotification = window.createNotification({
             // close on click
             closeOnClick: false,

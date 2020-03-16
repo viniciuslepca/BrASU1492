@@ -12,6 +12,7 @@ class PopupComponents extends React.Component {
                 <div>
                     <PopupTitle/>
                     <ItemPrice price={this.state.bg.price}/>
+                    <PredictedBillsSwitch/>
                     <ContentBox/>
                     <InstallmentsSlider/>
                 </div>
@@ -21,6 +22,20 @@ class PopupComponents extends React.Component {
                 <p>Please run this extension on Amazon's checkout page</p>
             );
         }
+    }
+}
+
+class PredictedBillsSwitch extends React.Component {
+    render() {
+        return (
+            <div style={{display: "flex", justifyContent: "space-between"}}>
+                <p>Include predicted expenses</p>
+                <label className="switch">
+                    <input type="checkbox"/>
+                    <span className="switch-slider round"/>
+                </label>
+            </div>
+        );
     }
 }
 
@@ -86,9 +101,15 @@ class InstallmentsPlot extends React.Component {
 }
 
 class InstallmentsSlider extends React.Component {
+    constructor() {
+        super();
+        this.state = {installments: 1}
+    }
+
     render() {
         return(
-            <div className="slidecontainer">
+            <div className="slide-container">
+                <p style={{marginBottom: 0, textAlign: "center"}}>I want to buy this in {this.state.installments}X</p>
                 <input type="range" min="1" max="12" value="1" className="slider" id="installments-slider"/>
             </div>
         );

@@ -20,23 +20,24 @@ var PopupComponents = function (_React$Component) {
     }
 
     _createClass(PopupComponents, [{
-        key: 'render',
+        key: "render",
         value: function render() {
             // TODO FIX THIS LATER - SHOULD BE if(this.state.bg.price !== null)
             if (this.state.bg.price !== null || true) {
                 return React.createElement(
-                    'div',
+                    "div",
                     null,
                     React.createElement(PopupTitle, null),
                     React.createElement(ItemPrice, { price: this.state.bg.price }),
+                    React.createElement(PredictedBillsSwitch, null),
                     React.createElement(ContentBox, null),
                     React.createElement(InstallmentsSlider, null)
                 );
             } else {
                 return React.createElement(
-                    'p',
+                    "p",
                     null,
-                    'Please run this extension on Amazon\'s checkout page'
+                    "Please run this extension on Amazon's checkout page"
                 );
             }
         }
@@ -45,8 +46,41 @@ var PopupComponents = function (_React$Component) {
     return PopupComponents;
 }(React.Component);
 
-var ContentBox = function (_React$Component2) {
-    _inherits(ContentBox, _React$Component2);
+var PredictedBillsSwitch = function (_React$Component2) {
+    _inherits(PredictedBillsSwitch, _React$Component2);
+
+    function PredictedBillsSwitch() {
+        _classCallCheck(this, PredictedBillsSwitch);
+
+        return _possibleConstructorReturn(this, (PredictedBillsSwitch.__proto__ || Object.getPrototypeOf(PredictedBillsSwitch)).apply(this, arguments));
+    }
+
+    _createClass(PredictedBillsSwitch, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                { style: { display: "flex", justifyContent: "space-between" } },
+                React.createElement(
+                    "p",
+                    null,
+                    "Include predicted expenses"
+                ),
+                React.createElement(
+                    "label",
+                    { className: "switch" },
+                    React.createElement("input", { type: "checkbox" }),
+                    React.createElement("span", { className: "switch-slider round" })
+                )
+            );
+        }
+    }]);
+
+    return PredictedBillsSwitch;
+}(React.Component);
+
+var ContentBox = function (_React$Component3) {
+    _inherits(ContentBox, _React$Component3);
 
     function ContentBox() {
         _classCallCheck(this, ContentBox);
@@ -55,11 +89,11 @@ var ContentBox = function (_React$Component2) {
     }
 
     _createClass(ContentBox, [{
-        key: 'render',
+        key: "render",
         value: function render() {
             return React.createElement(
-                'div',
-                { className: 'center content-box' },
+                "div",
+                { className: "center content-box" },
                 React.createElement(InstallmentsPlot, null)
             );
         }
@@ -68,8 +102,8 @@ var ContentBox = function (_React$Component2) {
     return ContentBox;
 }(React.Component);
 
-var InstallmentsPlot = function (_React$Component3) {
-    _inherits(InstallmentsPlot, _React$Component3);
+var InstallmentsPlot = function (_React$Component4) {
+    _inherits(InstallmentsPlot, _React$Component4);
 
     function InstallmentsPlot() {
         _classCallCheck(this, InstallmentsPlot);
@@ -78,7 +112,7 @@ var InstallmentsPlot = function (_React$Component3) {
     }
 
     _createClass(InstallmentsPlot, [{
-        key: 'componentDidMount',
+        key: "componentDidMount",
         value: function componentDidMount() {
             var ctx = document.getElementById('myChart').getContext('2d');
             new Chart(ctx, {
@@ -107,31 +141,41 @@ var InstallmentsPlot = function (_React$Component3) {
             });
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
-            return React.createElement('canvas', { id: 'myChart', width: '400', height: '400' });
+            return React.createElement("canvas", { id: "myChart", width: "400", height: "400" });
         }
     }]);
 
     return InstallmentsPlot;
 }(React.Component);
 
-var InstallmentsSlider = function (_React$Component4) {
-    _inherits(InstallmentsSlider, _React$Component4);
+var InstallmentsSlider = function (_React$Component5) {
+    _inherits(InstallmentsSlider, _React$Component5);
 
     function InstallmentsSlider() {
         _classCallCheck(this, InstallmentsSlider);
 
-        return _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).apply(this, arguments));
+        var _this5 = _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).call(this));
+
+        _this5.state = { installments: 1 };
+        return _this5;
     }
 
     _createClass(InstallmentsSlider, [{
-        key: 'render',
+        key: "render",
         value: function render() {
             return React.createElement(
-                'div',
-                { className: 'slidecontainer' },
-                React.createElement('input', { type: 'range', min: '1', max: '12', value: '1', className: 'slider', id: 'installments-slider' })
+                "div",
+                { className: "slide-container" },
+                React.createElement(
+                    "p",
+                    { style: { marginBottom: 0, textAlign: "center" } },
+                    "I want to buy this in ",
+                    this.state.installments,
+                    "X"
+                ),
+                React.createElement("input", { type: "range", min: "1", max: "12", value: "1", className: "slider", id: "installments-slider" })
             );
         }
     }]);
@@ -139,8 +183,8 @@ var InstallmentsSlider = function (_React$Component4) {
     return InstallmentsSlider;
 }(React.Component);
 
-var ItemPrice = function (_React$Component5) {
-    _inherits(ItemPrice, _React$Component5);
+var ItemPrice = function (_React$Component6) {
+    _inherits(ItemPrice, _React$Component6);
 
     function ItemPrice() {
         _classCallCheck(this, ItemPrice);
@@ -149,12 +193,12 @@ var ItemPrice = function (_React$Component5) {
     }
 
     _createClass(ItemPrice, [{
-        key: 'render',
+        key: "render",
         value: function render() {
             return React.createElement(
-                'p',
+                "p",
                 null,
-                'Item price: ',
+                "Item price: ",
                 this.props.price
             );
         }
@@ -165,9 +209,9 @@ var ItemPrice = function (_React$Component5) {
 
 function PopupTitle() {
     return React.createElement(
-        'h1',
+        "h1",
         { style: { textAlign: "center" } },
-        'Nubank Credit Control Extension'
+        "Nubank Credit Control Extension"
     );
 }
 
