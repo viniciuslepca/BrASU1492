@@ -105,10 +105,33 @@ var ContentBox = function (_React$Component3) {
 var InstallmentsPlot = function (_React$Component4) {
     _inherits(InstallmentsPlot, _React$Component4);
 
-    function InstallmentsPlot() {
+    function InstallmentsPlot(props) {
         _classCallCheck(this, InstallmentsPlot);
 
-        return _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).apply(this, arguments));
+        var _this4 = _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).call(this, props));
+
+        var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        var dataVals = [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0];
+        var fillGreen = "rgba(147, 196, 45, 0.5)";
+        var borderGreen = "rgba(147, 196, 45, 1)";
+        var fillRed = "rgba(229, 97, 92, 0.5)";
+        var borderRed = "rgba(229, 97, 92, 1)";
+        var colors = { fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed };
+        var recommendedLimit = 800;
+        var backgroundColors = [];
+        var borderColors = [];
+        for (var i = 0; i < dataVals.length; i++) {
+            if (dataVals[i] >= recommendedLimit) {
+                backgroundColors.push(colors.fillRed);
+                borderColors.push(colors.borderRed);
+            } else {
+                backgroundColors.push(colors.fillGreen);
+                borderColors.push(colors.borderGreen);
+            }
+        }
+        _this4.state = { months: months, dataVals: dataVals, colors: colors,
+            recommendedLimit: recommendedLimit, backGroundColors: backgroundColors, borderColors: borderColors };
+        return _this4;
     }
 
     _createClass(InstallmentsPlot, [{
@@ -122,8 +145,8 @@ var InstallmentsPlot = function (_React$Component4) {
                     datasets: [{
                         label: 'Future bills',
                         data: [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0],
-                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
-                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+                        backgroundColor: this.state.backGroundColors,
+                        borderColor: this.state.borderColors,
                         borderWidth: 1
                     }]
                 },
@@ -163,8 +186,16 @@ var InstallmentsSlider = function (_React$Component5) {
     }
 
     _createClass(InstallmentsSlider, [{
+        key: "handleChange",
+        value: function handleChange() {
+            var value = document.getElementById("installments-slider").value;
+            console.log(value);
+        }
+    }, {
         key: "render",
         value: function render() {
+            var _this6 = this;
+
             return React.createElement(
                 "div",
                 { className: "slide-container" },
@@ -175,7 +206,9 @@ var InstallmentsSlider = function (_React$Component5) {
                     this.state.installments,
                     "X"
                 ),
-                React.createElement("input", { type: "range", min: "1", max: "12", value: "1", className: "slider", id: "installments-slider" })
+                React.createElement("input", { type: "range", min: "1", max: "12", defaultValue: "1", className: "slider", id: "installments-slider", onChange: function onChange(event) {
+                        return _this6.handleChange(event);
+                    } })
             );
         }
     }]);
@@ -196,10 +229,18 @@ var ItemPrice = function (_React$Component6) {
         key: "render",
         value: function render() {
             return React.createElement(
-                "p",
-                null,
-                "Item price: ",
-                this.props.price
+                "div",
+                { style: { display: "flex", justifyContent: "space-between" } },
+                React.createElement(
+                    "p",
+                    null,
+                    "Item price:"
+                ),
+                React.createElement(
+                    "p",
+                    null,
+                    this.props.price
+                )
             );
         }
     }]);

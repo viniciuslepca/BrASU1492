@@ -50,6 +50,31 @@ class ContentBox extends React.Component {
 }
 
 class InstallmentsPlot extends React.Component {
+    constructor(props) {
+        super(props);
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const dataVals = [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0];
+        const fillGreen = "rgba(147, 196, 45, 0.5)";
+        const borderGreen = "rgba(147, 196, 45, 1)";
+        const fillRed = "rgba(229, 97, 92, 0.5)";
+        const borderRed = "rgba(229, 97, 92, 1)";
+        const colors = {fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed};
+        const recommendedLimit = 800;
+        let backgroundColors = [];
+        let borderColors = [];
+        for (let i = 0; i < dataVals.length; i++) {
+            if (dataVals[i] >= recommendedLimit) {
+                backgroundColors.push(colors.fillRed);
+                borderColors.push(colors.borderRed);
+            } else {
+                backgroundColors.push(colors.fillGreen);
+                borderColors.push(colors.borderGreen);
+            }
+        }
+        this.state = {months: months, dataVals: dataVals, colors: colors,
+            recommendedLimit: recommendedLimit, backGroundColors: backgroundColors, borderColors: borderColors};
+    }
+
     componentDidMount() {
         let ctx = document.getElementById('myChart').getContext('2d');
         new Chart(ctx, {
@@ -59,22 +84,8 @@ class InstallmentsPlot extends React.Component {
                 datasets: [{
                     label: 'Future bills',
                     data: [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
+                    backgroundColor: this.state.backGroundColors,
+                    borderColor: this.state.borderColors,
                     borderWidth: 1
                 }]
             },
@@ -106,11 +117,16 @@ class InstallmentsSlider extends React.Component {
         this.state = {installments: 1}
     }
 
+    handleChange() {
+        const value = document.getElementById("installments-slider").value;
+        console.log(value);
+    }
+
     render() {
         return(
             <div className="slide-container">
                 <p style={{marginBottom: 0, textAlign: "center"}}>I want to buy this in {this.state.installments}X</p>
-                <input type="range" min="1" max="12" value="1" className="slider" id="installments-slider"/>
+                <input type="range" min="1" max="12" defaultValue="1" className="slider" id="installments-slider" onChange={(event)=>this.handleChange(event)}/>
             </div>
         );
     }
@@ -119,7 +135,9 @@ class InstallmentsSlider extends React.Component {
 class ItemPrice extends React.Component {
     render() {
         return (
-            <p>Item price: {this.props.price}</p>
+            <div style={{display: "flex", justifyContent: "space-between"}}>
+                <p>Item price:</p><p>{this.props.price}</p>
+            </div>
         );
     }
 
