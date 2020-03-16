@@ -34,7 +34,7 @@ var PopupComponents = function (_React$Component) {
                 return React.createElement(
                     "p",
                     null,
-                    "This works"
+                    "Please run this extension on Amazon's checkout page"
                 );
             }
         }

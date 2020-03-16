@@ -16,7 +16,7 @@ class PopupComponents extends React.Component {
             );
         } else {
             return (
-                <p>This works</p>
+                <p>Please run this extension on Amazon's checkout page</p>
             );
         }
     }

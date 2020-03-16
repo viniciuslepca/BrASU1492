@@ -7,7 +7,8 @@
   "content_scripts": [
     {
       "matches": ["*://*.amazon.com/*buy*"],
-      "js": ["js/content.js"]
+      "js": ["js/vendor/notifications.js", "js/content.js"],
+      "css": ["css/vendor/notifications.css"]
     }
   ],
   "browser_action": {
