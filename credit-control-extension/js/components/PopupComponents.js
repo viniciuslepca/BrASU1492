@@ -6,7 +6,8 @@ class PopupComponents extends React.Component {
     }
 
     render() {
-        if (this.state.bg.price !== null) {
+        // TODO FIX THIS LATER - SHOULD BE if(this.state.bg.price !== null)
+        if (this.state.bg.price !== null || true) {
             return(
                 <div>
                     <PopupTitle/>
@@ -26,11 +27,31 @@ class ContentBox extends React.Component {
     render() {
         return (
             <div className="center content-box">
-                <p className="purple-text">Sup</p>
+                <InstallmentsPlot/>
             </div>
         )
     }
 }
+
+class InstallmentsPlot extends React.Component {
+    render() {
+        return (
+            <div className="graph-wrapper">
+                <div className="graph">
+                    {/*<Bar left={0}/>*/}
+                    {/*<Bar left={10}/>*/}
+                    {/*<Bar left={20}/>*/}
+                </div>
+            </div>
+        );
+    }
+}
+
+// function Bar(left) {
+//     return (
+//         <div className="bar" style={{left: `${left}%`}}/>
+//     );
+// }
 
 class ItemPrice extends React.Component {
     render() {

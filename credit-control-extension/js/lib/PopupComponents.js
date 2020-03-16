@@ -22,7 +22,8 @@ var PopupComponents = function (_React$Component) {
     _createClass(PopupComponents, [{
         key: "render",
         value: function render() {
-            if (this.state.bg.price !== null) {
+            // TODO FIX THIS LATER - SHOULD BE if(this.state.bg.price !== null)
+            if (this.state.bg.price !== null || true) {
                 return React.createElement(
                     "div",
                     null,
@@ -58,11 +59,7 @@ var ContentBox = function (_React$Component2) {
             return React.createElement(
                 "div",
                 { className: "center content-box" },
-                React.createElement(
-                    "p",
-                    { className: "purple-text" },
-                    "Sup"
-                )
+                React.createElement(InstallmentsPlot, null)
             );
         }
     }]);
@@ -70,8 +67,37 @@ var ContentBox = function (_React$Component2) {
     return ContentBox;
 }(React.Component);
 
-var ItemPrice = function (_React$Component3) {
-    _inherits(ItemPrice, _React$Component3);
+var InstallmentsPlot = function (_React$Component3) {
+    _inherits(InstallmentsPlot, _React$Component3);
+
+    function InstallmentsPlot() {
+        _classCallCheck(this, InstallmentsPlot);
+
+        return _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).apply(this, arguments));
+    }
+
+    _createClass(InstallmentsPlot, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                { className: "graph-wrapper" },
+                React.createElement("div", { className: "graph" })
+            );
+        }
+    }]);
+
+    return InstallmentsPlot;
+}(React.Component);
+
+// function Bar(left) {
+//     return (
+//         <div className="bar" style={{left: `${left}%`}}/>
+//     );
+// }
+
+var ItemPrice = function (_React$Component4) {
+    _inherits(ItemPrice, _React$Component4);
 
     function ItemPrice() {
         _classCallCheck(this, ItemPrice);

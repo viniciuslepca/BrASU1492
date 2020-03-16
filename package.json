@@ -16,5 +16,6 @@
   "bugs": {
     "url": "https://github.com/viniciuslepca/BrASU1492/issues"
   },
-  "homepage": "https://github.com/viniciuslepca/BrASU1492#readme"
+  "homepage": "https://github.com/viniciuslepca/BrASU1492#readme",
+  "dependencies": {}
 }
