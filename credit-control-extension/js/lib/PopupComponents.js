@@ -22,8 +22,7 @@ var PopupComponents = function (_React$Component) {
     _createClass(PopupComponents, [{
         key: "render",
         value: function render() {
-            // TODO FIX THIS LATER - SHOULD BE if(this.state.bg.price !== null)
-            if (this.state.bg.price !== null || true) {
+            if (this.state.bg.priceStr !== null) {
                 return React.createElement(
                     "div",
                     null,

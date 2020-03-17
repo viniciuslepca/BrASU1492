@@ -6,8 +6,7 @@ class PopupComponents extends React.Component {
     }
 
     render() {
-        // TODO FIX THIS LATER - SHOULD BE if(this.state.bg.price !== null)
-        if (this.state.bg.price !== null || true) {
+        if (this.state.bg.priceStr !== null) {
             return(
                 <div>
                     <PopupTitle/>

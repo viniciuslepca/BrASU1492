@@ -1,4 +1,5 @@
-window.price = null;
+window.priceStr = null;
+window.priceVal = null;
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
     // const options = {
