@@ -10,6 +10,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     //
     // chrome.notifications.create("notifId", options, function() {console.log("Last error:", chrome.runtime.lastError);});
 
-    window.price = request.price;
+    window.priceStr = request.priceStr;
+    window.priceVal = request.priceVal;
 });
 

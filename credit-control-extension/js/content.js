@@ -8,11 +8,12 @@ function shouldNotify() {
 
 
 if (location.href.includes("/buy/")) {
-    const price = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
-    const priceVal = parseFloat(price.substr(1));
+    const priceStr = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
+    const priceVal = parseFloat(priceStr.substr(1));
 
     chrome.runtime.sendMessage({
-        price: price
+        priceStr: priceStr,
+        priceVal: priceVal
     });
 
 
