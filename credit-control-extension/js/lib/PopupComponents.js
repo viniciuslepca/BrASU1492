@@ -69,6 +69,7 @@ var ContentComponents = function (_React$Component2) {
     }, {
         key: "render",
         value: function render() {
+            console.log(this.props.price);
             return React.createElement(
                 "div",
                 null,
@@ -182,7 +183,6 @@ var InstallmentsPlot = function (_React$Component4) {
     _createClass(InstallmentsPlot, [{
         key: "componentDidMount",
         value: function componentDidMount() {
-            console.log(this.state.displayData);
             // Render the plot
             var ctx = document.getElementById('myChart').getContext('2d');
             var chart = new Chart(ctx, {

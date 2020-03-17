@@ -9,7 +9,7 @@ function shouldNotify() {
 
 if (location.href.includes("/buy/")) {
     const priceStr = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
-    const priceVal = parseFloat(priceStr.substr(1));
+    const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
 
     chrome.runtime.sendMessage({
         priceStr: priceStr,

@@ -122,7 +122,6 @@ class InstallmentsPlot extends React.Component {
 
 
     componentDidMount() {
-        console.log(this.state.displayData);
         // Render the plot
         let ctx = document.getElementById('myChart').getContext('2d');
         let chart = new Chart(ctx, {
@@ -219,7 +218,6 @@ class InstallmentsPlot extends React.Component {
         for (let i = 0; i < this.props.installments; i++) {
             newData[i] += monthlyInstallment;
         }
-        console.log(newData);
         // Update colors
         let backgroundColors = [];
         let borderColors = [];
