@@ -94,6 +94,10 @@ class InstallmentsPlot extends React.Component {
         const borderRed = "rgba(229, 97, 92, 1)";
         const colors = {fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed};
         const recommendedLimit = 800;
+        let recLimLine = [];
+        for (let i = 0; i < dataVals.length; i++) {
+            recLimLine.push(recommendedLimit);
+        }
         let backgroundColors = [];
         let borderColors = [];
         for (let i = 0; i < dataVals.length; i++) {
@@ -105,7 +109,7 @@ class InstallmentsPlot extends React.Component {
                 borderColors.push(colors.borderGreen);
             }
         }
-        this.state = {months: months, dataVals: dataVals, colors: colors, recommendedLimit: recommendedLimit,
+        this.state = {months: months, dataVals: dataVals, colors: colors, recommendedLimit: recommendedLimit, recLimLine: recLimLine,
             backGroundColors: backgroundColors, borderColors: borderColors, predictedExpenses: predictedExpenses, chart: null};
     }
 
@@ -117,11 +121,18 @@ class InstallmentsPlot extends React.Component {
             data: {
                 labels: ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB'],
                 datasets: [{
-                    label: 'Future bills (red if above recommended)',
+                    label: 'Future bills (red if higher than recommended)',
                     data: this.state.dataVals,
                     backgroundColor: this.state.backGroundColors,
                     borderColor: this.state.borderColors,
-                    borderWidth: 1
+                    borderWidth: 1,
+                }, {
+                    label: 'Maximum recommended bill',
+                    data: this.state.recLimLine,
+                    backgroundColor: "rgba(0,0,0,0)",
+                    borderColor: "rgba(61,61,61,0.5)",
+                    pointRadius: 1,
+                    type: 'line'
                 }]
             },
             options: {

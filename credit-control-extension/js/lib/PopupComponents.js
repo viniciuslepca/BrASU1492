@@ -159,10 +159,14 @@ var InstallmentsPlot = function (_React$Component5) {
         var borderRed = "rgba(229, 97, 92, 1)";
         var colors = { fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed };
         var recommendedLimit = 800;
+        var recLimLine = [];
+        for (var i = 0; i < dataVals.length; i++) {
+            recLimLine.push(recommendedLimit);
+        }
         var backgroundColors = [];
         var borderColors = [];
-        for (var i = 0; i < dataVals.length; i++) {
-            if (dataVals[i] >= recommendedLimit) {
+        for (var _i = 0; _i < dataVals.length; _i++) {
+            if (dataVals[_i] >= recommendedLimit) {
                 backgroundColors.push(colors.fillRed);
                 borderColors.push(colors.borderRed);
             } else {
@@ -170,7 +174,7 @@ var InstallmentsPlot = function (_React$Component5) {
                 borderColors.push(colors.borderGreen);
             }
         }
-        _this5.state = { months: months, dataVals: dataVals, colors: colors, recommendedLimit: recommendedLimit,
+        _this5.state = { months: months, dataVals: dataVals, colors: colors, recommendedLimit: recommendedLimit, recLimLine: recLimLine,
             backGroundColors: backgroundColors, borderColors: borderColors, predictedExpenses: predictedExpenses, chart: null };
         return _this5;
     }
@@ -184,11 +188,18 @@ var InstallmentsPlot = function (_React$Component5) {
                 data: {
                     labels: ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB'],
                     datasets: [{
-                        label: 'Future bills (red if above recommended)',
+                        label: 'Future bills (red if higher than recommended)',
                         data: this.state.dataVals,
                         backgroundColor: this.state.backGroundColors,
                         borderColor: this.state.borderColors,
                         borderWidth: 1
+                    }, {
+                        label: 'Maximum recommended bill',
+                        data: this.state.recLimLine,
+                        backgroundColor: "rgba(0,0,0,0)",
+                        borderColor: "rgba(61,61,61,0.5)",
+                        pointRadius: 1,
+                        type: 'line'
                     }]
                 },
                 options: {
@@ -215,14 +226,14 @@ var InstallmentsPlot = function (_React$Component5) {
                         newData[i] += this.state.predictedExpenses;
                     }
                 } else {
-                    for (var _i = 0; _i < newData.length; _i++) {
-                        newData[_i] -= this.state.predictedExpenses;
+                    for (var _i2 = 0; _i2 < newData.length; _i2++) {
+                        newData[_i2] -= this.state.predictedExpenses;
                     }
                 }
                 var _backgroundColors = [];
                 var _borderColors = [];
-                for (var _i2 = 0; _i2 < newData.length; _i2++) {
-                    if (newData[_i2] >= this.state.recommendedLimit) {
+                for (var _i3 = 0; _i3 < newData.length; _i3++) {
+                    if (newData[_i3] >= this.state.recommendedLimit) {
                         _backgroundColors.push(this.state.colors.fillRed);
                         _borderColors.push(this.state.colors.borderRed);
                     } else {
