@@ -138,11 +138,6 @@ var InstallmentsPlot = function (_React$Component4) {
 
         var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         var dataVals = [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0];
-        // Add the price/installment to the dataVals
-        var monthlyInstallment = _this4.props.price / _this4.props.installments;
-        for (var i = 0; i < _this4.props.installments; i++) {
-            dataVals[i] += monthlyInstallment;
-        }
         // Set basic colors for the plot
         var fillGreen = "rgba(147, 196, 45, 0.5)";
         var borderGreen = "rgba(147, 196, 45, 1)";
@@ -152,14 +147,24 @@ var InstallmentsPlot = function (_React$Component4) {
         // Define recommended maximum monthly expense
         var recommendedLimit = 800;
         var recLimLine = [];
-        for (var _i = 0; _i < dataVals.length; _i++) {
+        for (var i = 0; i < dataVals.length; i++) {
             recLimLine.push(recommendedLimit);
+        }
+        // Include price of the item in 1 installment for first render
+        var displayData = [];
+        for (var _i = 0; _i < dataVals.length; _i++) {
+            if (_i === 0) {
+                // Assuming the initial state is a single installment
+                displayData.push(dataVals[_i] + props.price);
+            } else {
+                displayData.push(dataVals[_i]);
+            }
         }
         // Set bar colors based on whether they're lower or higher than recommended
         var backgroundColors = [];
         var borderColors = [];
-        for (var _i2 = 0; _i2 < dataVals.length; _i2++) {
-            if (dataVals[_i2] >= recommendedLimit) {
+        for (var _i2 = 0; _i2 < displayData.length; _i2++) {
+            if (displayData[_i2] >= recommendedLimit) {
                 backgroundColors.push(colors.fillRed);
                 borderColors.push(colors.borderRed);
             } else {
@@ -167,15 +172,18 @@ var InstallmentsPlot = function (_React$Component4) {
                 borderColors.push(colors.borderGreen);
             }
         }
+
         // Record everything in the state
-        _this4.state = { months: months, dataVals: dataVals, colors: colors, recommendedLimit: recommendedLimit, recLimLine: recLimLine,
-            backGroundColors: backgroundColors, borderColors: borderColors, chart: null };
+        _this4.state = { months: months, dataVals: dataVals, displayData: displayData, colors: colors,
+            backgroundColors: backgroundColors, borderColors: borderColors,
+            recommendedLimit: recommendedLimit, recLimLine: recLimLine, chart: null };
         return _this4;
     }
 
     _createClass(InstallmentsPlot, [{
         key: "componentDidMount",
         value: function componentDidMount() {
+            console.log(this.state.displayData);
             // Render the plot
             var ctx = document.getElementById('myChart').getContext('2d');
             var chart = new Chart(ctx, {
@@ -184,8 +192,8 @@ var InstallmentsPlot = function (_React$Component4) {
                     labels: ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB'],
                     datasets: [{
                         label: 'Future bills (red if higher than recommended)',
-                        data: this.state.dataVals,
-                        backgroundColor: this.state.backGroundColors,
+                        data: this.state.displayData,
+                        backgroundColor: this.state.backgroundColors,
                         borderColor: this.state.borderColors,
                         borderWidth: 1
                     }, {
@@ -271,9 +279,11 @@ var InstallmentsPlot = function (_React$Component4) {
             }
             // Add monthly installments
             var monthlyInstallment = this.props.price / this.props.installments;
+            monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
             for (var _i6 = 0; _i6 < this.props.installments; _i6++) {
                 newData[_i6] += monthlyInstallment;
             }
+            console.log(newData);
             // Update colors
             var backgroundColors = [];
             var borderColors = [];

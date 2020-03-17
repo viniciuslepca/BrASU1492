@@ -80,11 +80,6 @@ class InstallmentsPlot extends React.Component {
         super(props);
         const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         const dataVals = [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0];
-        // Add the price/installment to the dataVals
-        const monthlyInstallment = this.props.price / this.props.installments;
-        for (let i = 0; i < this.props.installments; i++) {
-            dataVals[i] += monthlyInstallment;
-        }
         // Set basic colors for the plot
         const fillGreen = "rgba(147, 196, 45, 0.5)";
         const borderGreen = "rgba(147, 196, 45, 1)";
@@ -97,11 +92,21 @@ class InstallmentsPlot extends React.Component {
         for (let i = 0; i < dataVals.length; i++) {
             recLimLine.push(recommendedLimit);
         }
+        // Include price of the item in 1 installment for first render
+        let displayData = [];
+        for (let i = 0; i < dataVals.length; i++) {
+            if (i === 0) {
+                // Assuming the initial state is a single installment
+                displayData.push(dataVals[i] + props.price);
+            } else {
+                displayData.push(dataVals[i]);
+            }
+        }
         // Set bar colors based on whether they're lower or higher than recommended
         let backgroundColors = [];
         let borderColors = [];
-        for (let i = 0; i < dataVals.length; i++) {
-            if (dataVals[i] >= recommendedLimit) {
+        for (let i = 0; i < displayData.length; i++) {
+            if (displayData[i] >= recommendedLimit) {
                 backgroundColors.push(colors.fillRed);
                 borderColors.push(colors.borderRed);
             } else {
@@ -109,13 +114,16 @@ class InstallmentsPlot extends React.Component {
                 borderColors.push(colors.borderGreen);
             }
         }
+
         // Record everything in the state
-        this.state = {months: months, dataVals: dataVals, colors: colors, recommendedLimit: recommendedLimit, recLimLine: recLimLine,
-            backGroundColors: backgroundColors, borderColors: borderColors, chart: null};
+        this.state = {months: months, dataVals: dataVals, displayData: displayData, colors: colors,
+            backgroundColors: backgroundColors, borderColors: borderColors,
+            recommendedLimit: recommendedLimit, recLimLine: recLimLine, chart: null};
     }
 
 
     componentDidMount() {
+        console.log(this.state.displayData);
         // Render the plot
         let ctx = document.getElementById('myChart').getContext('2d');
         let chart = new Chart(ctx, {
@@ -124,8 +132,8 @@ class InstallmentsPlot extends React.Component {
                 labels: ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB'],
                 datasets: [{
                     label: 'Future bills (red if higher than recommended)',
-                    data: this.state.dataVals,
-                    backgroundColor: this.state.backGroundColors,
+                    data: this.state.displayData,
+                    backgroundColor: this.state.backgroundColors,
                     borderColor: this.state.borderColors,
                     borderWidth: 1,
                 }, {
@@ -207,10 +215,12 @@ class InstallmentsPlot extends React.Component {
             }
         }
         // Add monthly installments
-        const monthlyInstallment = this.props.price / this.props.installments;
+        let monthlyInstallment = this.props.price / this.props.installments;
+        monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
         for (let i = 0; i < this.props.installments; i++) {
             newData[i] += monthlyInstallment;
         }
+        console.log(newData);
         // Update colors
         let backgroundColors = [];
         let borderColors = [];
