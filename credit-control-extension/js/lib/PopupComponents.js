@@ -198,7 +198,9 @@ var InstallmentsPlot = function (_React$Component5) {
                         data: this.state.recLimLine,
                         backgroundColor: "rgba(0,0,0,0)",
                         borderColor: "rgba(61,61,61,0.5)",
-                        pointRadius: 1,
+                        borderDash: [15, 5],
+                        borderWidth: 1.5,
+                        pointRadius: 0,
                         type: 'line'
                     }]
                 },
