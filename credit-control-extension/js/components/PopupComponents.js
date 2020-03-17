@@ -12,8 +12,7 @@ class PopupComponents extends React.Component {
                 <div>
                     <PopupTitle/>
                     <ItemPrice price={this.state.bg.price}/>
-                    <PredictedBillsSwitch/>
-                    <ContentBox/>
+                    <SwitchAndContentBox/>
                     <InstallmentsSlider/>
                 </div>
             );
@@ -25,13 +24,43 @@ class PopupComponents extends React.Component {
     }
 }
 
+class SwitchAndContentBox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {includePredicted: false};
+    }
+
+    setIncludePredicted(checked) {
+        this.setState({includePredicted: checked});
+    }
+
+    render() {
+        return (
+            <div>
+                <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)}/>
+                <ContentBox includePredicted={this.state.includePredicted}/>
+            </div>
+        )
+    }
+}
+
 class PredictedBillsSwitch extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange() {
+        const checked = document.getElementById("predicted-bills").checked;
+        this.props.setIncludePredicted(checked);
+    }
+
     render() {
         return (
             <div style={{display: "flex", justifyContent: "space-between"}}>
                 <p>Include predicted expenses</p>
                 <label className="switch">
-                    <input type="checkbox"/>
+                    <input type="checkbox" id="predicted-bills" onChange={this.handleChange}/>
                     <span className="switch-slider round"/>
                 </label>
             </div>
@@ -40,10 +69,14 @@ class PredictedBillsSwitch extends React.Component {
 }
 
 class ContentBox extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <div className="center content-box">
-                <InstallmentsPlot/>
+                <InstallmentsPlot includePredicted={this.props.includePredicted}/>
             </div>
         )
     }
@@ -54,6 +87,7 @@ class InstallmentsPlot extends React.Component {
         super(props);
         const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         const dataVals = [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0];
+        const predictedExpenses = 200;
         const fillGreen = "rgba(147, 196, 45, 0.5)";
         const borderGreen = "rgba(147, 196, 45, 1)";
         const fillRed = "rgba(229, 97, 92, 0.5)";
@@ -71,19 +105,20 @@ class InstallmentsPlot extends React.Component {
                 borderColors.push(colors.borderGreen);
             }
         }
-        this.state = {months: months, dataVals: dataVals, colors: colors,
-            recommendedLimit: recommendedLimit, backGroundColors: backgroundColors, borderColors: borderColors};
+        this.state = {months: months, dataVals: dataVals, colors: colors, recommendedLimit: recommendedLimit,
+            backGroundColors: backgroundColors, borderColors: borderColors, predictedExpenses: predictedExpenses, chart: null};
     }
+
 
     componentDidMount() {
         let ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
+        let chart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB'],
                 datasets: [{
-                    label: 'Future bills',
-                    data: [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0],
+                    label: 'Future bills (red if above recommended)',
+                    data: this.state.dataVals,
                     backgroundColor: this.state.backGroundColors,
                     borderColor: this.state.borderColors,
                     borderWidth: 1
@@ -101,7 +136,37 @@ class InstallmentsPlot extends React.Component {
                 maintainAspectRatio: false
             }
         });
+        this.setState({chart: chart});
+    }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.includePredicted !== prevProps.includePredicted) {
+            let newData = this.state.chart.data.datasets[0].data;
+            if (this.props.includePredicted) {
+                for (let i = 0; i < newData.length; i++) {
+                    newData[i] += this.state.predictedExpenses;
+                }
+            } else {
+                for (let i = 0; i < newData.length; i++) {
+                    newData[i] -= this.state.predictedExpenses;
+                }
+            }
+            let backgroundColors = [];
+            let borderColors = [];
+            for (let i = 0; i < newData.length; i++) {
+                if (newData[i] >= this.state.recommendedLimit) {
+                    backgroundColors.push(this.state.colors.fillRed);
+                    borderColors.push(this.state.colors.borderRed);
+                } else {
+                    backgroundColors.push(this.state.colors.fillGreen);
+                    borderColors.push(this.state.colors.borderGreen);
+                }
+            }
+            this.state.chart.data.datasets[0].data = newData;
+            this.state.chart.data.datasets[0].backgroundColor = backgroundColors;
+            this.state.chart.data.datasets[0].borderColor = borderColors;
+            this.state.chart.update();
+        }
     }
 
     render() {
@@ -119,7 +184,7 @@ class InstallmentsSlider extends React.Component {
 
     handleChange() {
         const value = document.getElementById("installments-slider").value;
-        console.log(value);
+        this.setState({installments: value});
     }
 
     render() {
