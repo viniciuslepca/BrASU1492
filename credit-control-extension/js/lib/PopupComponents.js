@@ -22,7 +22,7 @@ var PopupComponents = function (_React$Component) {
     _createClass(PopupComponents, [{
         key: "render",
         value: function render() {
-            if (this.state.bg.priceStr !== null) {
+            if (this.props.priceStr !== null) {
                 return React.createElement(
                     "div",
                     null,
@@ -30,9 +30,9 @@ var PopupComponents = function (_React$Component) {
                     React.createElement(
                         "div",
                         { id: "popup-body" },
-                        React.createElement(PopupStats, { price: this.state.bg.priceVal, income: this.state.bg.income, educationalFacts: this.state.bg.educationalFacts }),
-                        React.createElement(ItemPrice, { price: this.state.bg.priceStr }),
-                        React.createElement(ContentComponents, { price: this.state.bg.priceVal, income: this.state.bg.income, bills: this.state.bg.bills }),
+                        React.createElement(PopupStats, { price: this.props.priceVal, income: this.state.bg.income, educationalFacts: this.state.bg.educationalFacts }),
+                        React.createElement(ItemPrice, { price: this.props.priceStr }),
+                        React.createElement(ContentComponents, { price: this.props.priceVal, income: this.state.bg.income, bills: this.state.bg.bills }),
                         React.createElement(LearnMore, { educationalFacts: this.state.bg.educationalFacts })
                     )
                 );
@@ -375,7 +375,7 @@ var InstallmentsPlot = function (_React$Component4) {
         value: function render() {
             return React.createElement(
                 "div",
-                { className: "center content-box" },
+                { className: "center content-box plot-area" },
                 React.createElement("canvas", { id: "myChart", width: "400", height: "400" })
             );
         }
@@ -518,15 +518,15 @@ var LearnMore = function (_React$Component8) {
             var fact = this.props.educationalFacts[Math.floor(Math.random() * this.props.educationalFacts.length)];
             return React.createElement(
                 "div",
-                null,
+                { className: "content-box", style: { border: "5px", marginTop: "12px" } },
                 React.createElement(
                     "h1",
-                    { style: { textAlign: "center" } },
+                    { style: { textAlign: "center", color: "#9e1bd1" } },
                     "Dicas Nubank"
                 ),
                 React.createElement(
                     "p",
-                    null,
+                    { style: { color: "#9e1bd1" } },
                     fact
                 )
             );
@@ -536,4 +536,17 @@ var LearnMore = function (_React$Component8) {
     return LearnMore;
 }(React.Component);
 
-ReactDOM.render(React.createElement(PopupComponents, null), document.querySelector("#popup"));
+chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    var activeTab = tabs[0];
+    chrome.tabs.sendMessage(activeTab.id, { type: "getPrice" }, renderPopup);
+});
+
+function renderPopup(response) {
+    var priceStr = null;
+    var priceVal = null;
+    if (response) {
+        priceStr = response.priceStr;
+        priceVal = response.priceVal;
+    }
+    ReactDOM.render(React.createElement(PopupComponents, { priceStr: priceStr, priceVal: priceVal }), document.querySelector("#popup"));
+}

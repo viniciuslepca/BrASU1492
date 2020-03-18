@@ -6,14 +6,14 @@ class PopupComponents extends React.Component {
     }
 
     render() {
-        if (this.state.bg.priceStr !== null) {
+        if (this.props.priceStr !== null) {
             return(
                 <div>
                     <PopupHeader/>
                     <div id="popup-body">
-                        <PopupStats price={this.state.bg.priceVal} income={this.state.bg.income} educationalFacts={this.state.bg.educationalFacts}/>
-                        <ItemPrice price={this.state.bg.priceStr}/>
-                        <ContentComponents price={this.state.bg.priceVal} income={this.state.bg.income} bills={this.state.bg.bills}/>
+                        <PopupStats price={this.props.priceVal} income={this.state.bg.income} educationalFacts={this.state.bg.educationalFacts}/>
+                        <ItemPrice price={this.props.priceStr}/>
+                        <ContentComponents price={this.props.priceVal} income={this.state.bg.income} bills={this.state.bg.bills}/>
                         <LearnMore educationalFacts={this.state.bg.educationalFacts}/>
                     </div>
                 </div>
@@ -302,7 +302,7 @@ class InstallmentsPlot extends React.Component {
 
     render() {
         return (
-            <div className="center content-box">
+            <div className="center content-box plot-area">
                 <canvas id="myChart" width="400" height="400"/>
             </div>
         );
@@ -373,13 +373,25 @@ class LearnMore extends React.Component {
     render() {
         const fact = this.props.educationalFacts[Math.floor(Math.random() * this.props.educationalFacts.length)];
         return (
-            <div>
-                <h1 style={{textAlign: "center"}}>Dicas Nubank</h1>
-                <p>{fact}</p>
+            <div className="content-box" style={{border: "5px", marginTop: "12px"}}>
+                <h1 style={{textAlign: "center", color: "#9e1bd1"}}>Dicas Nubank</h1>
+                <p style={{color: "#9e1bd1"}}>{fact}</p>
             </div>
         )
     }
 }
 
+chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+    var activeTab = tabs[0];
+    chrome.tabs.sendMessage(activeTab.id, {type: "getPrice"}, renderPopup);
+});
 
-ReactDOM.render(<PopupComponents/>, document.querySelector("#popup"));
+function renderPopup(response) {
+    let priceStr = null;
+    let priceVal = null;
+    if (response) {
+        priceStr = response.priceStr;
+        priceVal = response.priceVal
+    }
+    ReactDOM.render(<PopupComponents priceStr={priceStr} priceVal={priceVal}/>, document.querySelector("#popup"));
+}

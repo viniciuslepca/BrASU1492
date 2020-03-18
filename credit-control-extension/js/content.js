@@ -1,6 +1,3 @@
-// const itemDetailsDiv = document.getElementsByClassName("a-fixed-left-grid-col item-details-right-column a-col-right");
-// const stuff = itemDetailsDiv[0].getElementsByClassName("a-text-bold");
-
 if (location.href.includes("/buy/")) {
     const priceStr = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
     const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
@@ -48,14 +45,14 @@ if (location.href.includes("/buy/")) {
             });
         }
     }
-}
 
-// chrome.runtime.onMessage.addListener(function(request, sender) {
-//     console.log(sender.tab ?
-//         "from a content script:" + sender.tab.url :
-//         "from the extension");
-//
-//     if (request.type === "getPrice") {
-//         chrome.runtime.sendMessage({price: price});
-//     }
-// });
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        console.log(sender.tab ?
+            "from a content script:" + sender.tab.url :
+            "from the extension");
+
+        if (request.type === "getPrice") {
+            sendResponse({priceStr: priceStr, priceVal: priceVal});
+        }
+    });
+}
