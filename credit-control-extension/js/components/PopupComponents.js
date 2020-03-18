@@ -51,7 +51,7 @@ class ContentComponents extends React.Component {
         return (
             <div>
                 <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)} predictedExpenses={this.state.predictedExpenses}/>
-                <InstallmentsSlider setInstallments={this.setInstallments.bind(this)}/>
+                <InstallmentsSlider setInstallments={this.setInstallments.bind(this)} price={this.props.price}/>
                 <InstallmentsPlot includePredicted={this.state.includePredicted} predictedExpenses={this.state.predictedExpenses}
                             price={this.props.price} installments={this.state.installments} income={this.props.income} bills={this.props.bills}/>
             </div>
@@ -310,21 +310,24 @@ class InstallmentsPlot extends React.Component {
 }
 
 class InstallmentsSlider extends React.Component {
-    constructor() {
-        super();
-        this.state = {installments: 1}
+    constructor(props) {
+        super(props);
+        this.state = {installments: 1, monthlyInstallment: props.price};
+        this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange() {
-        const value = document.getElementById("installments-slider").value;
-        this.setState({installments: value});
-        this.props.setInstallments(value);
+        const installments = document.getElementById("installments-slider").value;
+        let monthlyInstallment = this.props.price / installments;
+        monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2));
+        this.setState({installments: installments, monthlyInstallment: monthlyInstallment});
+        this.props.setInstallments(installments);
     }
 
     render() {
         return(
             <div className="slide-container">
-                <p style={{marginBottom: 0, textAlign: "center"}}>Quero fazer essa compra em {this.state.installments}X</p>
+                <p style={{marginBottom: 0, textAlign: "center"}}>Quero fazer essa compra em {this.state.installments}X de R${this.state.monthlyInstallment}</p>
                 <input type="range" min="1" max="12" defaultValue="1" className="slider" id="installments-slider" onChange={(event)=>this.handleChange(event)}/>
             </div>
         );

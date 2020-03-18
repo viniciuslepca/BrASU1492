@@ -13,17 +13,8 @@ window.educationalFacts.push("Acompanhe diariamente seus gastos do cartão de cr
 window.educationalFacts.push("Em compras não emergenciais, evite parcelar: prefira economizar e obter descontos de compra à vista");
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    // const options = {
-    //     type: "basic",
-    //     iconUrl: chrome.extension.getURL("../images/icon48.png"),
-    //     title: "This is the title",
-    //     message: "This is the main message of the notification",
-    // };
-    //
-    // chrome.notifications.create("notifId", options, function() {console.log("Last error:", chrome.runtime.lastError);});
-
-    window.priceStr = request.priceStr;
-    window.priceVal = request.priceVal;
-    sendResponse({income: window.income});
+    if (request.type === "getIncome") {
+        sendResponse({income: window.income});
+    }
 });
 

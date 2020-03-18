@@ -91,7 +91,7 @@ var ContentComponents = function (_React$Component2) {
                 "div",
                 null,
                 React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this), predictedExpenses: this.state.predictedExpenses }),
-                React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this) }),
+                React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this), price: this.props.price }),
                 React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted, predictedExpenses: this.state.predictedExpenses,
                     price: this.props.price, installments: this.state.installments, income: this.props.income, bills: this.props.bills })
             );
@@ -387,21 +387,24 @@ var InstallmentsPlot = function (_React$Component4) {
 var InstallmentsSlider = function (_React$Component5) {
     _inherits(InstallmentsSlider, _React$Component5);
 
-    function InstallmentsSlider() {
+    function InstallmentsSlider(props) {
         _classCallCheck(this, InstallmentsSlider);
 
-        var _this5 = _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).call(this));
+        var _this5 = _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).call(this, props));
 
-        _this5.state = { installments: 1 };
+        _this5.state = { installments: 1, monthlyInstallment: props.price };
+        _this5.handleChange = _this5.handleChange.bind(_this5);
         return _this5;
     }
 
     _createClass(InstallmentsSlider, [{
         key: "handleChange",
         value: function handleChange() {
-            var value = document.getElementById("installments-slider").value;
-            this.setState({ installments: value });
-            this.props.setInstallments(value);
+            var installments = document.getElementById("installments-slider").value;
+            var monthlyInstallment = this.props.price / installments;
+            monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2));
+            this.setState({ installments: installments, monthlyInstallment: monthlyInstallment });
+            this.props.setInstallments(installments);
         }
     }, {
         key: "render",
@@ -416,7 +419,8 @@ var InstallmentsSlider = function (_React$Component5) {
                     { style: { marginBottom: 0, textAlign: "center" } },
                     "Quero fazer essa compra em ",
                     this.state.installments,
-                    "X"
+                    "X de R$",
+                    this.state.monthlyInstallment
                 ),
                 React.createElement("input", { type: "range", min: "1", max: "12", defaultValue: "1", className: "slider", id: "installments-slider", onChange: function onChange(event) {
                         return _this6.handleChange(event);
