@@ -1,49 +1,52 @@
 // const itemDetailsDiv = document.getElementsByClassName("a-fixed-left-grid-col item-details-right-column a-col-right");
 // const stuff = itemDetailsDiv[0].getElementsByClassName("a-text-bold");
 
-// TODO - WRITE THIS
-function shouldNotify() {
-    return true;
-}
-
-
 if (location.href.includes("/buy/")) {
     const priceStr = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
     const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
 
+    let income = null;
     chrome.runtime.sendMessage({
         priceStr: priceStr,
         priceVal: priceVal
-    });
+    }, notify);
 
+    function shouldNotify() {
+        const incomePercentTrigger = 0.1;
+        return (priceVal / income) > incomePercentTrigger;
+    }
 
-    if (shouldNotify()) {
-        const priceNotification = window.createNotification({
-            // close on click
-            closeOnClick: false,
+    function notify(response) {
+        income = response.income;
+        if (shouldNotify()) {
+            const priceNotification = window.createNotification({
+                // close on click
+                closeOnClick: false,
 
-            // displays close button
-            displayCloseButton: true,
+                // displays close button
+                displayCloseButton: true,
 
-            // nfc-top-left
-            // nfc-bottom-right
-            // nfc-bottom-left
-            positionClass: 'nfc-top-right',
+                // nfc-top-left
+                // nfc-bottom-right
+                // nfc-bottom-left
+                positionClass: 'nfc-top-right',
 
-            // callback
-            onclick: false,
+                // callback
+                onclick: false,
 
-            // timeout in milliseconds
-            showDuration: 10000,
+                // timeout in milliseconds
+                showDuration: 5000,
 
-            // success, info, warning, error, and none
-            theme: 'info'
-        });
+                // success, info, warning, error, and none
+                theme: 'info'
+            });
 
-        priceNotification({
-            title: 'Wait a second!',
-            message: 'This purchase represents X% of your monthly income. Click on the Nubank extension icon to learn more about it.'
-        });
+            const percent = ((priceVal / income) * 100).toFixed(1);
+            priceNotification({
+                title: 'Espere um momento!',
+                message: `Essa compra representa ${percent}% da sua renda mensal. Clique no botão da extensão da Nubank para aprender mais.`
+            });
+        }
     }
 }
 

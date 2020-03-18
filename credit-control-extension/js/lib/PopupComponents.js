@@ -30,13 +30,13 @@ var PopupComponents = function (_React$Component) {
                     React.createElement(
                         "div",
                         { id: "popup-body" },
-                        React.createElement(PopupTitle, { price: this.state.bg.priceVal, income: this.state.bg.income }),
+                        React.createElement(PopupStats, { price: this.state.bg.priceVal, income: this.state.bg.income }),
                         React.createElement(ItemPrice, { price: this.state.bg.priceStr }),
-                        React.createElement(ContentComponents, { price: this.state.bg.priceVal })
+                        React.createElement(ContentComponents, { price: this.state.bg.priceVal, income: this.state.bg.income, bills: this.state.bg.bills })
                     )
                 );
             } else {
-                // TODO - make this case just print a random financial education fact
+                var fact = this.state.bg.educationalStats[Math.floor(Math.random() * this.state.bg.educationalStats.length)];
                 return React.createElement(
                     "div",
                     null,
@@ -44,7 +44,7 @@ var PopupComponents = function (_React$Component) {
                     React.createElement(
                         "p",
                         null,
-                        "Nenhuma compra aqui!"
+                        fact
                     )
                 );
             }
@@ -60,9 +60,10 @@ var ContentComponents = function (_React$Component2) {
     function ContentComponents(props) {
         _classCallCheck(this, ContentComponents);
 
+        // TODO - make this be dependent on the actual expenses
         var _this2 = _possibleConstructorReturn(this, (ContentComponents.__proto__ || Object.getPrototypeOf(ContentComponents)).call(this, props));
 
-        var predictedExpenses = 200;
+        var predictedExpenses = parseFloat((0.5 * _this2.props.income).toFixed(2));
         _this2.state = { includePredicted: false, predictedExpenses: predictedExpenses, installments: 1 };
         return _this2;
     }
@@ -85,7 +86,7 @@ var ContentComponents = function (_React$Component2) {
                 null,
                 React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this), predictedExpenses: this.state.predictedExpenses }),
                 React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted, predictedExpenses: this.state.predictedExpenses,
-                    price: this.props.price, installments: this.state.installments }),
+                    price: this.props.price, installments: this.state.installments, income: this.props.income, bills: this.props.bills }),
                 React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this) })
             );
         }
@@ -147,7 +148,7 @@ var InstallmentsPlot = function (_React$Component4) {
         var _this4 = _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).call(this, props));
 
         var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-        var dataVals = [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0];
+        var dataVals = _this4.props.bills;
         // Set basic colors for the plot
         var fillGreen = "rgba(147, 196, 45, 0.5)";
         var borderGreen = "rgba(147, 196, 45, 1)";
@@ -159,14 +160,15 @@ var InstallmentsPlot = function (_React$Component4) {
         var transparentPurple = "rgba(158, 27, 209, 0.2)";
         var colors = { fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed,
             fillBlack: fillBlack, borderBlack: borderBlack, opaquePurple: opaquePurple, transparentPurple: transparentPurple };
-        // Define recommended maximum monthly expense
-        var recommendedLimit = 800;
+        // Define recommended maximum monthly expense (30% of income)
+        var recommendedLimit = parseFloat((0.3 * _this4.props.income).toFixed(2));
         var recLimLine = [];
         for (var i = 0; i < dataVals.length; i++) {
             recLimLine.push(recommendedLimit);
         }
-        // Define the credit limit
-        var creditLimit = 1200;
+        // Define the credit limit (70% of income)
+        // TODO - pull actual value from database
+        var creditLimit = parseFloat((1 * _this4.props.income).toFixed(2));
         var creditLimitLine = [];
         for (var _i = 0; _i < dataVals.length; _i++) {
             creditLimitLine.push(creditLimit);
@@ -286,14 +288,14 @@ var InstallmentsPlot = function (_React$Component4) {
         }
     }, {
         key: "setColors",
-        value: function setColors(newData) {
+        value: function setColors(newData, recommendedLimit) {
             var backgroundColors = [];
             var borderColors = [];
             for (var i = 0; i < newData.length; i++) {
                 if (newData[i] >= this.state.creditLimit) {
                     backgroundColors.push(this.state.colors.fillBlack);
                     borderColors.push(this.state.colors.borderBlack);
-                } else if (newData[i] >= this.state.recommendedLimit) {
+                } else if (newData[i] >= recommendedLimit) {
                     backgroundColors.push(this.state.colors.fillRed);
                     borderColors.push(this.state.colors.borderRed);
                 } else {
@@ -306,18 +308,24 @@ var InstallmentsPlot = function (_React$Component4) {
     }, {
         key: "updateIncludePredicted",
         value: function updateIncludePredicted() {
+            // Update future bills and recommended limit
             var newData = this.state.chart.data.datasets[0].data;
+            var newRecLim = this.state.chart.data.datasets[1].data;
+            var recLim = this.state.recommendedLimit;
             if (this.props.includePredicted) {
                 for (var i = 0; i < newData.length; i++) {
                     newData[i] += this.props.predictedExpenses;
+                    newRecLim[i] += this.props.predictedExpenses;
                 }
+                recLim += this.props.predictedExpenses;
             } else {
                 for (var _i4 = 0; _i4 < newData.length; _i4++) {
                     newData[_i4] -= this.props.predictedExpenses;
+                    newRecLim[_i4] -= this.props.predictedExpenses;
                 }
             }
             // Update colors
-            var colorResults = this.setColors(newData);
+            var colorResults = this.setColors(newData, recLim);
             var backgroundColors = colorResults[0];
             var borderColors = colorResults[1];
 
@@ -347,7 +355,7 @@ var InstallmentsPlot = function (_React$Component4) {
                 newData[_i6] += monthlyInstallment;
             }
             // Update colors
-            var colorResults = this.setColors(newData);
+            var colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data[0]);
             var backgroundColors = colorResults[0];
             var borderColors = colorResults[1];
 
@@ -446,16 +454,16 @@ var ItemPrice = function (_React$Component6) {
     return ItemPrice;
 }(React.Component);
 
-var PopupTitle = function (_React$Component7) {
-    _inherits(PopupTitle, _React$Component7);
+var PopupStats = function (_React$Component7) {
+    _inherits(PopupStats, _React$Component7);
 
-    function PopupTitle(props) {
-        _classCallCheck(this, PopupTitle);
+    function PopupStats(props) {
+        _classCallCheck(this, PopupStats);
 
-        return _possibleConstructorReturn(this, (PopupTitle.__proto__ || Object.getPrototypeOf(PopupTitle)).call(this, props));
+        return _possibleConstructorReturn(this, (PopupStats.__proto__ || Object.getPrototypeOf(PopupStats)).call(this, props));
     }
 
-    _createClass(PopupTitle, [{
+    _createClass(PopupStats, [{
         key: "render",
         value: function render() {
             var percentage = (this.props.price / this.props.income * 100).toFixed(1);
@@ -478,7 +486,7 @@ var PopupTitle = function (_React$Component7) {
         }
     }]);
 
-    return PopupTitle;
+    return PopupStats;
 }(React.Component);
 
 function PopupHeader() {
