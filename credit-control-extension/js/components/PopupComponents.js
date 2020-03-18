@@ -87,7 +87,16 @@ class PredictedBillsSwitch extends React.Component {
 class InstallmentsPlot extends React.Component {
     constructor(props) {
         super(props);
+        // Set month information based on current month
         const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        let monthData = [];
+        for (let i = new Date().getMonth(); i < 12; i++) {
+            monthData.push(months[i]);
+        }
+        for (let i = 0; i < new Date().getMonth(); i++) {
+            monthData.push(months[i]);
+        }
+
         const dataVals = this.props.bills;
         // Set basic colors for the plot
         const fillGreen = "rgba(147, 196, 45, 0.5)";
@@ -140,7 +149,7 @@ class InstallmentsPlot extends React.Component {
         }
 
         // Record everything in the state
-        this.state = {months: months, dataVals: dataVals, displayData: displayData, colors: colors,
+        this.state = {months: monthData, dataVals: dataVals, displayData: displayData, colors: colors,
             backgroundColors: backgroundColors, borderColors: borderColors, recommendedLimit: recommendedLimit,
             recLimLine: recLimLine, creditLimit: creditLimit, creditLimitLine: creditLimitLine, chart: null};
     }
@@ -376,7 +385,7 @@ class LearnMore extends React.Component {
     render() {
         const fact = this.props.educationalFacts[Math.floor(Math.random() * this.props.educationalFacts.length)];
         return (
-            <div className="content-box" style={{border: "5px", marginTop: "12px"}}>
+            <div className="content-box" style={{border: "5px", marginTop: "12px", padding: "3px"}}>
                 <h1 style={{textAlign: "center", color: "#9e1bd1"}}>Dicas Nubank</h1>
                 <p style={{color: "#9e1bd1"}}>{fact}</p>
             </div>

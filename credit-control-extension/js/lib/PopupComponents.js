@@ -151,9 +151,18 @@ var InstallmentsPlot = function (_React$Component4) {
     function InstallmentsPlot(props) {
         _classCallCheck(this, InstallmentsPlot);
 
+        // Set month information based on current month
         var _this4 = _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).call(this, props));
 
         var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        var monthData = [];
+        for (var i = new Date().getMonth(); i < 12; i++) {
+            monthData.push(months[i]);
+        }
+        for (var _i = 0; _i < new Date().getMonth(); _i++) {
+            monthData.push(months[_i]);
+        }
+
         var dataVals = _this4.props.bills;
         // Set basic colors for the plot
         var fillGreen = "rgba(147, 196, 45, 0.5)";
@@ -169,34 +178,34 @@ var InstallmentsPlot = function (_React$Component4) {
         // Define recommended maximum monthly expense (30% of income)
         var recommendedLimit = parseFloat((0.3 * _this4.props.income).toFixed(2));
         var recLimLine = [];
-        for (var i = 0; i < dataVals.length; i++) {
+        for (var _i2 = 0; _i2 < dataVals.length; _i2++) {
             recLimLine.push(recommendedLimit);
         }
         // Define the credit limit (70% of income)
         // TODO - pull actual value from database
         var creditLimit = parseFloat((1 * _this4.props.income).toFixed(2));
         var creditLimitLine = [];
-        for (var _i = 0; _i < dataVals.length; _i++) {
+        for (var _i3 = 0; _i3 < dataVals.length; _i3++) {
             creditLimitLine.push(creditLimit);
         }
         // Include price of the item in 1 installment for first render
         var displayData = [];
-        for (var _i2 = 0; _i2 < dataVals.length; _i2++) {
-            if (_i2 === 0) {
+        for (var _i4 = 0; _i4 < dataVals.length; _i4++) {
+            if (_i4 === 0) {
                 // Assuming the initial state is a single installment
-                displayData.push(dataVals[_i2] + props.price);
+                displayData.push(dataVals[_i4] + props.price);
             } else {
-                displayData.push(dataVals[_i2]);
+                displayData.push(dataVals[_i4]);
             }
         }
         // Set bar colors based on whether they're lower or higher than recommended
         var backgroundColors = [];
         var borderColors = [];
-        for (var _i3 = 0; _i3 < displayData.length; _i3++) {
-            if (displayData[_i3] >= creditLimit) {
+        for (var _i5 = 0; _i5 < displayData.length; _i5++) {
+            if (displayData[_i5] >= creditLimit) {
                 backgroundColors.push(colors.fillBlack);
                 borderColors.push(colors.borderBlack);
-            } else if (displayData[_i3] >= recommendedLimit) {
+            } else if (displayData[_i5] >= recommendedLimit) {
                 backgroundColors.push(colors.fillRed);
                 borderColors.push(colors.borderRed);
             } else {
@@ -206,7 +215,7 @@ var InstallmentsPlot = function (_React$Component4) {
         }
 
         // Record everything in the state
-        _this4.state = { months: months, dataVals: dataVals, displayData: displayData, colors: colors,
+        _this4.state = { months: monthData, dataVals: dataVals, displayData: displayData, colors: colors,
             backgroundColors: backgroundColors, borderColors: borderColors, recommendedLimit: recommendedLimit,
             recLimLine: recLimLine, creditLimit: creditLimit, creditLimitLine: creditLimitLine, chart: null };
         return _this4;
@@ -325,9 +334,9 @@ var InstallmentsPlot = function (_React$Component4) {
                 }
                 recLim += this.props.predictedExpenses;
             } else {
-                for (var _i4 = 0; _i4 < newData.length; _i4++) {
-                    newData[_i4] -= this.props.predictedExpenses;
-                    newRecLim[_i4] -= this.props.predictedExpenses;
+                for (var _i6 = 0; _i6 < newData.length; _i6++) {
+                    newData[_i6] -= this.props.predictedExpenses;
+                    newRecLim[_i6] -= this.props.predictedExpenses;
                 }
             }
             // Update colors
@@ -350,15 +359,15 @@ var InstallmentsPlot = function (_React$Component4) {
             }
             // Include predicted expenses if necessary
             if (this.props.includePredicted) {
-                for (var _i5 = 0; _i5 < newData.length; _i5++) {
-                    newData[_i5] += this.props.predictedExpenses;
+                for (var _i7 = 0; _i7 < newData.length; _i7++) {
+                    newData[_i7] += this.props.predictedExpenses;
                 }
             }
             // Add monthly installments
             var monthlyInstallment = this.props.price / this.props.installments;
             monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
-            for (var _i6 = 0; _i6 < this.props.installments; _i6++) {
-                newData[_i6] += monthlyInstallment;
+            for (var _i8 = 0; _i8 < this.props.installments; _i8++) {
+                newData[_i8] += monthlyInstallment;
             }
             // Update colors
             var colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data[0]);
@@ -522,7 +531,7 @@ var LearnMore = function (_React$Component8) {
             var fact = this.props.educationalFacts[Math.floor(Math.random() * this.props.educationalFacts.length)];
             return React.createElement(
                 "div",
-                { className: "content-box", style: { border: "5px", marginTop: "12px" } },
+                { className: "content-box", style: { border: "5px", marginTop: "12px", padding: "3px" } },
                 React.createElement(
                     "h1",
                     { style: { textAlign: "center", color: "#9e1bd1" } },

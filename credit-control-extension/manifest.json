@@ -7,7 +7,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.amazon.com/*", "*://*.amazon.com.br/*"],
-      "js": ["js/vendor/notifications.js", "js/content.js"],
+      "js": ["js/vendor/notifications.js", "js/content-amazon.js"],
       "css": ["css/vendor/notifications.css"],
       "run_at": "document_end"
     }
