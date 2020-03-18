@@ -69,7 +69,6 @@ var ContentComponents = function (_React$Component2) {
     }, {
         key: "render",
         value: function render() {
-            console.log(this.props.price);
             return React.createElement(
                 "div",
                 null,
@@ -210,9 +209,28 @@ var InstallmentsPlot = function (_React$Component4) {
                     scales: {
                         yAxes: [{
                             ticks: {
-                                beginAtZero: true
+                                beginAtZero: false,
+                                fontColor: "#9e1bd1"
+                            },
+                            gridLines: {
+                                drawOnChartArea: false,
+                                color: "rgba(158, 27, 209, 0.2)"
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                fontColor: "#9e1bd1"
+                            },
+                            gridLines: {
+                                drawOnChartArea: false,
+                                color: "rgba(158, 27, 209, 0.2)"
                             }
                         }]
+                    },
+                    legend: {
+                        labels: {
+                            fontColor: "#9e1bd1"
+                        }
                     },
                     responsive: true,
                     maintainAspectRatio: false
@@ -282,7 +300,6 @@ var InstallmentsPlot = function (_React$Component4) {
             for (var _i6 = 0; _i6 < this.props.installments; _i6++) {
                 newData[_i6] += monthlyInstallment;
             }
-            console.log(newData);
             // Update colors
             var backgroundColors = [];
             var borderColors = [];

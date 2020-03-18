@@ -149,9 +149,28 @@ class InstallmentsPlot extends React.Component {
                 scales: {
                     yAxes: [{
                         ticks: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            fontColor: "#9e1bd1"
+                        },
+                        gridLines: {
+                            drawOnChartArea: false,
+                            color: "rgba(158, 27, 209, 0.2)"
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontColor: "#9e1bd1"
+                        },
+                        gridLines: {
+                            drawOnChartArea: false,
+                            color: "rgba(158, 27, 209, 0.2)"
                         }
                     }]
+                },
+                legend: {
+                    labels: {
+                        fontColor: "#9e1bd1"
+                    }
                 },
                 responsive: true,
                 maintainAspectRatio: false
