@@ -30,17 +30,23 @@ var PopupComponents = function (_React$Component) {
                     React.createElement(
                         "div",
                         { id: "popup-body" },
-                        React.createElement(PopupStats, { price: this.state.bg.priceVal, income: this.state.bg.income }),
+                        React.createElement(PopupStats, { price: this.state.bg.priceVal, income: this.state.bg.income, educationalFacts: this.state.bg.educationalFacts }),
                         React.createElement(ItemPrice, { price: this.state.bg.priceStr }),
-                        React.createElement(ContentComponents, { price: this.state.bg.priceVal, income: this.state.bg.income, bills: this.state.bg.bills })
+                        React.createElement(ContentComponents, { price: this.state.bg.priceVal, income: this.state.bg.income, bills: this.state.bg.bills }),
+                        React.createElement(LearnMore, { educationalFacts: this.state.bg.educationalFacts })
                     )
                 );
             } else {
-                var fact = this.state.bg.educationalStats[Math.floor(Math.random() * this.state.bg.educationalStats.length)];
+                var fact = this.state.bg.educationalFacts[Math.floor(Math.random() * this.state.bg.educationalFacts.length)];
                 return React.createElement(
                     "div",
                     null,
                     React.createElement(PopupHeader, null),
+                    React.createElement(
+                        "h1",
+                        { style: { textAlign: "center" } },
+                        "Dicas Nubank"
+                    ),
                     React.createElement(
                         "p",
                         null,
@@ -85,9 +91,9 @@ var ContentComponents = function (_React$Component2) {
                 "div",
                 null,
                 React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this), predictedExpenses: this.state.predictedExpenses }),
+                React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this) }),
                 React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted, predictedExpenses: this.state.predictedExpenses,
-                    price: this.props.price, installments: this.state.installments, income: this.props.income, bills: this.props.bills }),
-                React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this) })
+                    price: this.props.price, installments: this.state.installments, income: this.props.income, bills: this.props.bills })
             );
         }
     }]);
@@ -496,5 +502,38 @@ function PopupHeader() {
         React.createElement("img", { src: "../../images/nubank_logo_offwhite.png", height: "40", alt: "Nubank Logo", className: "center" })
     );
 }
+
+var LearnMore = function (_React$Component8) {
+    _inherits(LearnMore, _React$Component8);
+
+    function LearnMore(props) {
+        _classCallCheck(this, LearnMore);
+
+        return _possibleConstructorReturn(this, (LearnMore.__proto__ || Object.getPrototypeOf(LearnMore)).call(this, props));
+    }
+
+    _createClass(LearnMore, [{
+        key: "render",
+        value: function render() {
+            var fact = this.props.educationalFacts[Math.floor(Math.random() * this.props.educationalFacts.length)];
+            return React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "h1",
+                    { style: { textAlign: "center" } },
+                    "Dicas Nubank"
+                ),
+                React.createElement(
+                    "p",
+                    null,
+                    fact
+                )
+            );
+        }
+    }]);
+
+    return LearnMore;
+}(React.Component);
 
 ReactDOM.render(React.createElement(PopupComponents, null), document.querySelector("#popup"));

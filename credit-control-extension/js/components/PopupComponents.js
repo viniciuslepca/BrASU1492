@@ -11,17 +11,19 @@ class PopupComponents extends React.Component {
                 <div>
                     <PopupHeader/>
                     <div id="popup-body">
-                        <PopupStats price={this.state.bg.priceVal} income={this.state.bg.income}/>
+                        <PopupStats price={this.state.bg.priceVal} income={this.state.bg.income} educationalFacts={this.state.bg.educationalFacts}/>
                         <ItemPrice price={this.state.bg.priceStr}/>
                         <ContentComponents price={this.state.bg.priceVal} income={this.state.bg.income} bills={this.state.bg.bills}/>
+                        <LearnMore educationalFacts={this.state.bg.educationalFacts}/>
                     </div>
                 </div>
             );
         } else {
-            const fact = this.state.bg.educationalStats[Math.floor(Math.random() * this.state.bg.educationalStats.length)];
+            const fact = this.state.bg.educationalFacts[Math.floor(Math.random() * this.state.bg.educationalFacts.length)];
             return (
                 <div>
                     <PopupHeader/>
+                    <h1 style={{textAlign: "center"}}>Dicas Nubank</h1>
                     <p>{fact}</p>
                 </div>
             );
@@ -49,9 +51,9 @@ class ContentComponents extends React.Component {
         return (
             <div>
                 <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)} predictedExpenses={this.state.predictedExpenses}/>
+                <InstallmentsSlider setInstallments={this.setInstallments.bind(this)}/>
                 <InstallmentsPlot includePredicted={this.state.includePredicted} predictedExpenses={this.state.predictedExpenses}
                             price={this.props.price} installments={this.state.installments} income={this.props.income} bills={this.props.bills}/>
-                <InstallmentsSlider setInstallments={this.setInstallments.bind(this)}/>
             </div>
         )
     }
@@ -362,5 +364,22 @@ function PopupHeader() {
         </div>
     );
 }
+
+class LearnMore extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const fact = this.props.educationalFacts[Math.floor(Math.random() * this.props.educationalFacts.length)];
+        return (
+            <div>
+                <h1 style={{textAlign: "center"}}>Dicas Nubank</h1>
+                <p>{fact}</p>
+            </div>
+        )
+    }
+}
+
 
 ReactDOM.render(<PopupComponents/>, document.querySelector("#popup"));
