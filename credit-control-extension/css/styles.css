@@ -18,11 +18,13 @@ body {
 
 h1 {
     color: var(--main-white);
+    margin: 6px;
 }
 
 p {
     color: var(--main-white);
-    font-size: 14px;
+    font-size: 16px;
+    margin: 6px;
 }
 
 .center {
