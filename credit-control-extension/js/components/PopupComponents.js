@@ -321,14 +321,14 @@ class InstallmentsPlot extends React.Component {
 class InstallmentsSlider extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {installments: 1, monthlyInstallment: props.price};
+        this.state = {installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.',',')};
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange() {
         const installments = document.getElementById("installments-slider").value;
         let monthlyInstallment = this.props.price / installments;
-        monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2));
+        monthlyInstallment = monthlyInstallment.toFixed(2).replace('.',',');
         this.setState({installments: installments, monthlyInstallment: monthlyInstallment});
         this.props.setInstallments(installments);
     }

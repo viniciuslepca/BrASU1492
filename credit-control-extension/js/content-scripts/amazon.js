@@ -36,7 +36,7 @@ if (location.href.includes("/buy/")) {
                 theme: 'info'
             });
 
-            const percent = ((priceVal / income) * 100).toFixed(1);
+            const percent = ((priceVal / income) * 100).toFixed(1).replace('.',',');
             priceNotification({
                 title: 'Espere um momento!',
                 message: `Essa compra representa ${percent}% da sua renda mensal. Clique no botão da extensão da Nubank para aprender mais.`

@@ -401,7 +401,7 @@ var InstallmentsSlider = function (_React$Component5) {
 
         var _this5 = _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).call(this, props));
 
-        _this5.state = { installments: 1, monthlyInstallment: props.price };
+        _this5.state = { installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.', ',') };
         _this5.handleChange = _this5.handleChange.bind(_this5);
         return _this5;
     }
@@ -411,7 +411,7 @@ var InstallmentsSlider = function (_React$Component5) {
         value: function handleChange() {
             var installments = document.getElementById("installments-slider").value;
             var monthlyInstallment = this.props.price / installments;
-            monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2));
+            monthlyInstallment = monthlyInstallment.toFixed(2).replace('.', ',');
             this.setState({ installments: installments, monthlyInstallment: monthlyInstallment });
             this.props.setInstallments(installments);
         }

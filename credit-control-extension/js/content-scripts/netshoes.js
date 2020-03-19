@@ -1,5 +1,5 @@
-if (location.href.includes("/Checkout")) {
-    const priceStr = document.getElementById("lblValorTotal").textContent;
+if (location.href.includes("/checkout")) {
+    const priceStr = document.getElementsByClassName("ns-w4  total-price-subtitle")[0].textContent;
     const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
 
     chrome.runtime.sendMessage({
@@ -45,7 +45,7 @@ if (location.href.includes("/Checkout")) {
     }
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.type === "getPrice") {
-            const priceStr = document.getElementById("lblValorTotal").textContent;
+            const priceStr = document.getElementsByClassName("ns-w4  total-price-subtitle")[0].textContent;
             const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
             sendResponse({priceStr: priceStr, priceVal: priceVal});
         }
