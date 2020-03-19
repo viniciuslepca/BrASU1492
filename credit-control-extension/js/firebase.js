@@ -3,24 +3,24 @@ Key Assumptions:
     1. Utilities are paid at a set time each month
     2. Paid first of each month
 */
-getMonthlyExpenses()
+getMonthlyExpenses();
 
 function getMonthlyExpenses () {
-    var ret_amt_total;
+    let ret_amt_total;
     Firebase.enableLogging(true);
-    var ref = new Firebase('https://nubank-credit-control.firebaseio.com');
-    var dates = [];
+    let ref = new Firebase('https://nubank-credit-control.firebaseio.com');
+    let dates = [];
 
-    var d = new Date();
+    let d = new Date();
+    let present_date;
     if ((d.getMonth() + 1) > 9) {
-        var present_date = "" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+        present_date = "" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
     } else {
-        var present_date = "" + d.getFullYear() + "-0" + (d.getMonth() + 1) + "-" + d.getDate();
+        present_date = "" + d.getFullYear() + "-0" + (d.getMonth() + 1) + "-" + d.getDate();
     }
 
     // populate dates with the first date of each month
-    var first_date_of_month;
-    var d = new Date();
+    let first_date_of_month;
     d.setYear(present_date.slice(0, 4));
     d.setMonth(present_date.slice(5, 7) - 1);
     d.setDate(present_date.slice(8, 10));
@@ -33,7 +33,7 @@ function getMonthlyExpenses () {
     }
     
     // populate last date of month
-    var last_date_of_month = present_date.slice(0, 7) + "-00"
+    let last_date_of_month = present_date.slice(0, 7) + "-00";
 
     console.log(first_date_of_month);
     console.log(present_date);
@@ -41,22 +41,22 @@ function getMonthlyExpenses () {
 
     // query Firebase
     ref.on("value", function(snapshot) {
-        var income = snapshot.child("users").child("u142652").child("income").val();
-        t_ids = Object.keys(snapshot.child("users").child("u142652").child("transactions").val());
-        amt_installments = [12];
+        let income = snapshot.child("users").child("u142652").child("income").val();
+        let t_ids = Object.keys(snapshot.child("users").child("u142652").child("transactions").val());
+        let amt_installments = [12];
         // handled in backend
-        for (var d = 0; d < 12; d++) {
+        for (let d = 0; d < 12; d++) {
             amt_installments[d] = 0;
         }
-        for (var i in t_ids) {
-            trans_temp = snapshot.child("transactions").child(t_ids[i])
+        for (let i in t_ids) {
+            let trans_temp = snapshot.child("transactions").child(t_ids[i])
             if (trans_temp.child("date").val() >= first_date_of_month && 
                     trans_temp.child("date").val() < last_date_of_month) {
                 // if a transaction was not the final installment
                 if (trans_temp.child("nPart").val() < trans_temp.child("nTotal").val()) {
                     console.log("Installments value: " + trans_temp.child("amount").val());
-                    var rem_pay = trans_temp.child("nTotal").val() - trans_temp.child("nPart").val();
-                    for (var m = 0; m < rem_pay; m++) {
+                    let rem_pay = trans_temp.child("nTotal").val() - trans_temp.child("nPart").val();
+                    for (let m = 0; m < rem_pay; m++) {
                         amt_installments[m] += -1 * trans_temp.child("amount").val();
                     }
                 }
@@ -65,10 +65,10 @@ function getMonthlyExpenses () {
             if (trans_temp.child("date").val() >= last_date_of_month && 
                     trans_temp.child("date").val() < present_date) {
                 // if a transaction was not the final installment
-                if (trans_temp.child("nPart").val() == 1 && trans_temp.child("nTotal").val() > 1) {
+                if (trans_temp.child("nPart").val() === 1 && trans_temp.child("nTotal").val() > 1) {
                     console.log("Installments value: " + trans_temp.child("amount").val());
-                    var rem_pay = trans_temp.child("nTotal").val() - trans_temp.child("nPart").val();
-                    for (var m = 0; m <= rem_pay; m++) {
+                    let rem_pay = trans_temp.child("nTotal").val() - trans_temp.child("nPart").val();
+                    for (let m = 0; m <= rem_pay; m++) {
                         amt_installments[m] += -1 * trans_temp.child("amount").val();
                     }
                 }
@@ -86,15 +86,15 @@ function getMonthlyExpenses () {
 // defining helper function that gets account balance as of a set time
 function getAccountBalanceAsOfTime (present_date) {
     Firebase.enableLogging(true);
-    var ref = new Firebase('https://nubank-credit-control.firebaseio.com');
+    let ref = new Firebase('https://nubank-credit-control.firebaseio.com');
     // querying Firebase
     ref.once("value", function(snapshot) {
-        t_ids = Object.keys(snapshot.child("users").child("u142652").child("transactions").val());
-        var balance = 0;
-        for (var i in t_ids){
-            trans_temp = snapshot.child("transactions").child(t_ids[i])
+        let t_ids = Object.keys(snapshot.child("users").child("u142652").child("transactions").val());
+        let balance = 0;
+        for (let i in t_ids){
+            let trans_temp = snapshot.child("transactions").child(t_ids[i]);
             if (trans_temp.child("date").val() <= present_date) {
-                t_amt = trans_temp.child("amount").val()
+                let t_amt = trans_temp.child("amount").val();
                 balance += t_amt;
             }
         }
