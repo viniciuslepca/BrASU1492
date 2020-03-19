@@ -41,6 +41,12 @@
       "js": ["js/vendor/notifications.js", "js/content-scripts/magalu.js"],
       "css": ["css/vendor/notifications.css"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.mercadolivre.com.br/*"],
+      "js": ["js/vendor/notifications.js", "js/content-scripts/mercado-livre.js"],
+      "css": ["css/vendor/notifications.css"],
+      "run_at": "document_idle"
     }
   ],
   "browser_action": {
