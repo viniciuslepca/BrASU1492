@@ -393,7 +393,7 @@ class LearnMore extends React.Component {
     }
 }
 
-chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
     var activeTab = tabs[0];
     chrome.tabs.sendMessage(activeTab.id, {type: "getPrice"}, renderPopup);
 });

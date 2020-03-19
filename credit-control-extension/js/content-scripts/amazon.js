@@ -45,10 +45,6 @@ if (location.href.includes("/buy/")) {
         }
     }
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
-
         if (request.type === "getPrice") {
             const priceStr = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
             const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
