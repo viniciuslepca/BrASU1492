@@ -1,5 +1,5 @@
 # Nubank+ Chrome Extension
-**EN-US:** Nubank+ is a Google Chrome extension meant to assist Nubank's customers 
+**EN-US:** Nu+ is a Google Chrome extension meant to assist Nubank's customers 
 in online shopping. Our main goal is to provide customers with more control over their
 personal finances by tackling two main issues:
 - Avoiding impulse buying
@@ -14,7 +14,7 @@ the user to make better financial decisions.
 
 This project was developed by team BrASU1492 for BRASA Hacks 2020.
 
-**PT-BR:** Nubank+ é uma extensão para Google Chrome que busca auxiliar clientes da Nubank 
+**PT-BR:** Nu+ é uma extensão para Google Chrome que busca auxiliar clientes da Nubank 
 em compras online. Nosso principal objetivo é oferecer aos clientes mais controle sobre suas 
 finanças pessoais, focando em dois pilares:
 - Evitar compras por impulso
