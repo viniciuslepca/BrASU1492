@@ -34,6 +34,12 @@
       "js": ["js/vendor/notifications.js", "js/content-scripts/netshoes.js"],
       "css": ["css/vendor/notifications.css"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.magazineluiza.com.br/*"],
+      "js": ["js/vendor/notifications.js", "js/content-scripts/magalu.js"],
+      "css": ["css/vendor/notifications.css"],
+      "run_at": "document_idle"
     }
   ],
   "browser_action": {
