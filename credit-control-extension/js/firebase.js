@@ -6,6 +6,7 @@ Key Assumptions:
 getMonthlyExpenses();
 
 function getMonthlyExpenses () {
+    console.log("getting");
     let ret_amt_total;
     Firebase.enableLogging(true);
     let ref = new Firebase('https://nubank-credit-control.firebaseio.com');
@@ -35,9 +36,9 @@ function getMonthlyExpenses () {
     // populate last date of month
     let last_date_of_month = present_date.slice(0, 7) + "-00";
 
-    console.log(first_date_of_month);
-    console.log(present_date);
-    console.log(last_date_of_month);
+    // console.log(first_date_of_month);
+    // console.log(present_date);
+    // console.log(last_date_of_month);
 
     // query Firebase
     let amt_installments = [12];
@@ -55,7 +56,7 @@ function getMonthlyExpenses () {
                     trans_temp.child("date").val() < last_date_of_month) {
                 // if a transaction was not the final installment
                 if (trans_temp.child("nPart").val() < trans_temp.child("nTotal").val()) {
-                    console.log("Installments value: " + trans_temp.child("amount").val());
+                    // console.log("Installments value: " + trans_temp.child("amount").val());
                     let rem_pay = trans_temp.child("nTotal").val() - trans_temp.child("nPart").val();
                     for (let m = 0; m < rem_pay; m++) {
                         amt_installments[m] += -1 * trans_temp.child("amount").val();
@@ -71,7 +72,7 @@ function getMonthlyExpenses () {
                 trans_temp.child("date").val() < present_date) {
                 // if a transaction was not the final installment
                 if (trans_temp.child("nPart").val() === 1 && trans_temp.child("nTotal").val() > 1) {
-                    console.log("Installments value: " + trans_temp.child("amount").val());
+                    // console.log("Installments value: " + trans_temp.child("amount").val());
                     let rem_pay = trans_temp.child("nTotal").val() - trans_temp.child("nPart").val();
                     for (let m = 0; m <= rem_pay; m++) {
                         amt_installments[m] += -1 * trans_temp.child("amount").val();
@@ -80,7 +81,10 @@ function getMonthlyExpenses () {
             }
         }
         // sending array
-        chrome.runtime.sendMessage({type: "setExpenses", amt_installments: amt_installments, amt_fixed: amt_fixed, income: income});
+        //chrome.runtime.sendMessage({type: "setExpenses", amt_installments: amt_installments, amt_fixed: amt_fixed, income: income});
+        window.income = income;
+        window.bills = amt_installments;
+        window.predictedExpenses = amt_fixed;
 
       }, () => console.log("Error"));
 }
