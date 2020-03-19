@@ -1,6 +1,6 @@
 {
-  "name": "Credit Control Extension",
-  "description": "This is the Nubank Chrome extension, which helps you have more control over your online purchases.",
+  "name": "Nubank+ - Controle de Crédito",
+  "description": "Nubank+ te ajuda a controlar suas compras online, evitando compras por impulso e te ajudando a tomar decisões de parcelamento.",
   "version": "1.0",
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' https://gstatic.com/firebasejs/* https://cdn.firebase.com https://*.firebaseio.com https://*.firebaseio-demo.com; object-src 'self'",
@@ -51,7 +51,7 @@
   ],
   "browser_action": {
     "default_popup": "html/popup.html",
-    "default_title": "Nubank Credit Control"
+    "default_title": "Nubank+"
   },
   "background": {
     "page": "html/background.html"

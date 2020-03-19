@@ -6,7 +6,6 @@ Key Assumptions:
 getMonthlyExpenses();
 
 function getMonthlyExpenses () {
-    console.log("getting");
     let ret_amt_total;
     Firebase.enableLogging(true);
     let ref = new Firebase('https://nubank-credit-control.firebaseio.com');
