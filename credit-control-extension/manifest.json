@@ -22,6 +22,12 @@
       "js": ["js/vendor/notifications.js", "js/content-scripts/dafiti.js"],
       "css": ["css/vendor/notifications.css"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.casasbahia.com.br/*"],
+      "js": ["js/vendor/notifications.js", "js/content-scripts/casas-bahia.js"],
+      "css": ["css/vendor/notifications.css"],
+      "run_at": "document_idle"
     }
   ],
   "browser_action": {
