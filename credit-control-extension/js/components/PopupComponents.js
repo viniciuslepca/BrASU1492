@@ -13,7 +13,8 @@ class PopupComponents extends React.Component {
                     <div id="popup-body">
                         <PopupStats price={this.props.priceVal} income={this.state.bg.income} educationalFacts={this.state.bg.educationalFacts}/>
                         <ItemPrice price={this.props.priceStr}/>
-                        <ContentComponents price={this.props.priceVal} income={this.state.bg.income} bills={this.state.bg.bills}/>
+                        <ContentComponents price={this.props.priceVal} income={this.state.bg.income}
+                                           bills={this.state.bg.bills} predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
                         <LearnMore educationalFacts={this.state.bg.educationalFacts}/>
                     </div>
                 </div>
@@ -34,9 +35,7 @@ class PopupComponents extends React.Component {
 class ContentComponents extends React.Component {
     constructor(props) {
         super(props);
-        // TODO - make this be dependent on the actual expenses
-        const predictedExpenses = parseFloat((0.5 * this.props.income).toFixed(2));
-        this.state = {includePredicted: false, predictedExpenses: predictedExpenses, installments: 1};
+        this.state = {includePredicted: false, installments: 1};
     }
 
     setIncludePredicted(checked) {
@@ -50,9 +49,9 @@ class ContentComponents extends React.Component {
     render() {
         return (
             <div>
-                <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)} predictedExpenses={this.state.predictedExpenses}/>
+                <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)} predictedExpenses={this.props.predictedExpenses}/>
                 <InstallmentsSlider setInstallments={this.setInstallments.bind(this)} price={this.props.price}/>
-                <InstallmentsPlot includePredicted={this.state.includePredicted} predictedExpenses={this.state.predictedExpenses}
+                <InstallmentsPlot includePredicted={this.state.includePredicted} predictedExpenses={this.props.predictedExpenses}
                             price={this.props.price} installments={this.state.installments} income={this.props.income} bills={this.props.bills}/>
             </div>
         )

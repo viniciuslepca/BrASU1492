@@ -32,7 +32,8 @@ var PopupComponents = function (_React$Component) {
                         { id: "popup-body" },
                         React.createElement(PopupStats, { price: this.props.priceVal, income: this.state.bg.income, educationalFacts: this.state.bg.educationalFacts }),
                         React.createElement(ItemPrice, { price: this.props.priceStr }),
-                        React.createElement(ContentComponents, { price: this.props.priceVal, income: this.state.bg.income, bills: this.state.bg.bills }),
+                        React.createElement(ContentComponents, { price: this.props.priceVal, income: this.state.bg.income,
+                            bills: this.state.bg.bills, predictedExpenses: parseFloat(this.state.bg.predictedExpenses.toFixed(2)) }),
                         React.createElement(LearnMore, { educationalFacts: this.state.bg.educationalFacts })
                     )
                 );
@@ -66,11 +67,9 @@ var ContentComponents = function (_React$Component2) {
     function ContentComponents(props) {
         _classCallCheck(this, ContentComponents);
 
-        // TODO - make this be dependent on the actual expenses
         var _this2 = _possibleConstructorReturn(this, (ContentComponents.__proto__ || Object.getPrototypeOf(ContentComponents)).call(this, props));
 
-        var predictedExpenses = parseFloat((0.5 * _this2.props.income).toFixed(2));
-        _this2.state = { includePredicted: false, predictedExpenses: predictedExpenses, installments: 1 };
+        _this2.state = { includePredicted: false, installments: 1 };
         return _this2;
     }
 
@@ -90,9 +89,9 @@ var ContentComponents = function (_React$Component2) {
             return React.createElement(
                 "div",
                 null,
-                React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this), predictedExpenses: this.state.predictedExpenses }),
+                React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this), predictedExpenses: this.props.predictedExpenses }),
                 React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this), price: this.props.price }),
-                React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted, predictedExpenses: this.state.predictedExpenses,
+                React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted, predictedExpenses: this.props.predictedExpenses,
                     price: this.props.price, installments: this.state.installments, income: this.props.income, bills: this.props.bills })
             );
         }

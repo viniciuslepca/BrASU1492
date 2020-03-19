@@ -40,16 +40,17 @@ function getMonthlyExpenses () {
     console.log(last_date_of_month);
 
     // query Firebase
+    let amt_installments = [12];
+    let amt_fixed = 0;
     ref.on("value", function(snapshot) {
         let income = snapshot.child("users").child("u142652").child("income").val();
         let t_ids = Object.keys(snapshot.child("users").child("u142652").child("transactions").val());
-        let amt_installments = [12];
         // handled in backend
         for (let d = 0; d < 12; d++) {
             amt_installments[d] = 0;
         }
         for (let i in t_ids) {
-            let trans_temp = snapshot.child("transactions").child(t_ids[i])
+            let trans_temp = snapshot.child("transactions").child(t_ids[i]);
             if (trans_temp.child("date").val() >= first_date_of_month && 
                     trans_temp.child("date").val() < last_date_of_month) {
                 // if a transaction was not the final installment
@@ -60,10 +61,14 @@ function getMonthlyExpenses () {
                         amt_installments[m] += -1 * trans_temp.child("amount").val();
                     }
                 }
+                // if transaction is fixed
+                if (trans_temp.child("category").val() === "Utilities" ||
+                    trans_temp.child("category").val() === "Housing") {
+                    amt_fixed += -1 * trans_temp.child("amount").val();
+                }
             }
-
-            if (trans_temp.child("date").val() >= last_date_of_month && 
-                    trans_temp.child("date").val() < present_date) {
+            if (trans_temp.child("date").val() >= last_date_of_month &&
+                trans_temp.child("date").val() < present_date) {
                 // if a transaction was not the final installment
                 if (trans_temp.child("nPart").val() === 1 && trans_temp.child("nTotal").val() > 1) {
                     console.log("Installments value: " + trans_temp.child("amount").val());
@@ -74,10 +79,8 @@ function getMonthlyExpenses () {
                 }
             }
         }
-        console.log(amt_installments);
         // sending array
-        chrome.runtime.sendMessage({type: "m", amt_inst: amt_installments});
-        chrome.runtime.sendMessage({type: "income", inc: income});
+        chrome.runtime.sendMessage({type: "setExpenses", amt_installments: amt_installments, amt_fixed: amt_fixed, income: income});
 
       }, () => console.log("Error"));
 }
