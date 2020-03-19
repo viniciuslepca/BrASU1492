@@ -60,6 +60,11 @@ function getMonthlyExpenses () {
                         amt_installments[m] += -1 * trans_temp.child("amount").val();
                     }
                 }
+                // if transaction is fixed
+                if (trans_temp.child("category").val() == "Utilities" || 
+                    trans_temp.child("category").val() == "Housing") {
+                    amt_fixed += -1 * trans_temp.child("amount").val();
+                }
             }
 
             if (trans_temp.child("date").val() >= last_date_of_month && 
