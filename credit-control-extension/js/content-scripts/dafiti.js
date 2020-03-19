@@ -1,5 +1,5 @@
-if (location.href.includes("/buy/")) {
-    const priceStr = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
+if (location.href.includes("/checkout/")) {
+    const priceStr = document.getElementsByClassName("grand-total-small")[0].textContent;
     const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
 
     chrome.runtime.sendMessage({
@@ -45,7 +45,7 @@ if (location.href.includes("/buy/")) {
     }
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.type === "getPrice") {
-            const priceStr = document.getElementById("subtotals-marketplace-table").getElementsByClassName("grand-total-price")[0].textContent.trim();
+            const priceStr = document.getElementsByClassName("grand-total-small")[0].textContent;
             const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
             sendResponse({priceStr: priceStr, priceVal: priceVal});
         }

@@ -16,19 +16,18 @@ function runScript() {
         const priceStr = document.getElementsByClassName("summaryTotal-totalWithoutInstallment")[0].textContent;
         const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
 
-        let income = null;
         chrome.runtime.sendMessage({
             type: "getIncome"
         }, notify);
 
-        function shouldNotify() {
-            const incomePercentTrigger = 0.1;
+        function shouldNotify(priceVal, income, incomePercentTrigger) {
             return (priceVal / income) > incomePercentTrigger;
         }
 
         function notify(response) {
-            income = response.income;
-            if (shouldNotify()) {
+            const income = response.income;
+            const incomePercentTrigger = response.incomePercentTrigger;
+            if (shouldNotify(priceVal, income, incomePercentTrigger)) {
                 const priceNotification = window.createNotification({
                     // close on click
                     closeOnClick: false,

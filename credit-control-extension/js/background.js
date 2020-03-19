@@ -1,6 +1,7 @@
 window.priceStr = null;
 window.priceVal = null;
 window.income = 2000;
+window.incomePercentTrigger = 0.01;
 window.bills = [1072, 980, 800, 800, 640, 640, 200, 200, 200, 0, 0, 0];
 window.educationalFacts = [];
 window.educationalFacts.push("84% dos consumidores já fizeram compras por impulso");
@@ -14,7 +15,7 @@ window.educationalFacts.push("Em compras não emergenciais, evite parcelar: pref
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.type === "getIncome") {
-        sendResponse({income: window.income});
+        sendResponse({income: window.income, incomePercentTrigger: window.incomePercentTrigger});
     }
 });
 
