@@ -9,7 +9,10 @@ Key Assumptions:
 // console.log(getAccountBalanceAsOfTime("2019-12-20"));
 // console.log(getAmountOfKnownPayments("2020-02-23"));
 
-console.log(getAmountOfPaymentsRemainingInMonth("2020-02-23", 1))
+getAmountOfPaymentsRemainingInMonth("2020-02-23", 1);
+const bg = chrome.extension.getBackgroundPage();
+const amt_total = bg.monthlyExpenses;
+console.log(amt_total);
 /*
 console.log("Final Log: " + getAmountRemainingSync("2020-02-23", 1))
 function getAmountRemainingSync(date, n_mo) {
@@ -41,7 +44,7 @@ function getAccountBalanceAsOfTime (present_date) {
                 balance += t_amt;
             }
         }
-        console.log(balance);
+        //console.log(balance);
         return balance;
       }, () => console.log("Error"));
 }
@@ -104,9 +107,9 @@ function getAmountOfPaymentsRemainingInMonth (present_date, n_mo_back) {
         last_date_of_month = "" + d.getFullYear() + "-0" + (d.getMonth() + 1) + "-00";
     }
 
-    console.log(first_date_of_month.toString())
-    console.log(look_date.toString())
-    console.log(last_date_of_month.toString())
+    //console.log(first_date_of_month.toString())
+    //console.log(look_date.toString())
+    //console.log(last_date_of_month.toString())
 
 
     // query Firebase
@@ -143,11 +146,12 @@ function getAmountOfPaymentsRemainingInMonth (present_date, n_mo_back) {
         // we guess due to chance the average amount of spending not accounted for
         // as being uniformlly distributed over the duration of the month
         amt_guess = (days_left_in_mo / 30) * (amt_total_spent - amt_installments)
-        console.log(amt_installments);
-        console.log(amt_fixed);
-        console.log(amt_guess);
+        //console.log(amt_installments);
+        //console.log(amt_fixed);
+        //console.log(amt_guess);
         var amt_total = amt_installments + amt_fixed + amt_guess;
         console.log(amt_total);
+        chrome.runtime.sendMessage({type: "setMonthlyExpenses", amt_total: amt_total});
         ret_amt_total = amt_total;
       }, () => console.log("Error"));
       return ret_amt_total;
