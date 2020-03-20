@@ -12,6 +12,8 @@ it shows important information about the purchase and allows users to simulate t
 of this purchase added to their other expenses. The bottom section provides educational statistics to encourage
 the user to make better financial decisions.
 
+All financial transactions are sourced and simulated in a realtime Firebase database.
+
 This project was developed by team BrASU1492 for BRASA Hacks 2020.
 
 **PT-BR:** Nu+ é uma extensão para Google Chrome que busca auxiliar clientes da Nubank 
@@ -30,7 +32,7 @@ Esse projeto foi desenvolvido pelo time BrASU1492 para a BRASA Hacks 2020.
 ## Usage / Uso
 **EN-US:**
 1. Download the `credit-control-extension` folder.
-2. Type and enterr `chrome://extensions` in the Google Chrome search bar.
+2. Type and enter `chrome://extensions` in the Google Chrome search bar.
 3. On the top right, enable "Developer Mode".
 4. Click on "Load Unpacked" and select the `credit-control-extension` folder.
 
