@@ -12,7 +12,7 @@ it shows important information about the purchase and allows users to simulate t
 of this purchase added to their other expenses. The bottom section provides educational statistics to encourage
 the user to make better financial decisions.
 
-All financial transactions are sourced and simulated in a realtime Firebase database.
+All financial transactions are simulated in a Realtime Firebase database.
 
 This project was developed by team BrASU1492 for BRASA Hacks 2020.
 
@@ -26,6 +26,8 @@ Essa extensão notifica o usuário quando ele está prestes a fazer uma compra o
 certo limite (no momento, 10% de sua renda mensal). Clicando no popup da extensão, o usuário pode ver informações
 úteis sobre a compra e simular as parcelas futuras dessa compra, somadas às suas outras despesas. A última seção 
 mostra estatísticas educacionais para estimular o usuário a tomar decisões financeiras melhores.
+
+As transações financeiras são simuladas em uma base de dados Realtime Firebase.
 
 Esse projeto foi desenvolvido pelo time BrASU1492 para a BRASA Hacks 2020.
 
@@ -41,3 +43,16 @@ Esse projeto foi desenvolvido pelo time BrASU1492 para a BRASA Hacks 2020.
 2. Digite `chrome://extensions` na barra de pesquisa do Google Chrome e aperte enter.
 3. No canto superior direito, ative o "Modo do desenvolvedor".
 4. Clique em "Carregar sem compactação" e selecione a pasta `credit-control-extension`.
+
+## Technologies used / Tecnologias utilizadas
+- HTML, CSS, Javascript
+- [React](https://reactjs.org/)
+- [Chart.js](https://www.chartjs.org/)
+- [Notifications.js](https://www.cssscript.com/minimal-notification-popup-pure-javascript/)
+- [Firebase](https://firebase.google.com/)
+- [Chrome Extension API](https://developer.chrome.com/extensions)
+
+The BrASU1492 team would like to thank BRASA and Nubank for offering this opportunity and proposing this very interesting
+challenge.  
+O time BrASU1492 gostaria de agradecer à BRASA e à Nubank por oferecer essa oportunidade e propor esse desafio extremamente
+interessante.
