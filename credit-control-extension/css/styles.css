@@ -50,7 +50,7 @@ body::-webkit-scrollbar-track {
 
 #header {
     background-color: rgba(0,0,0,0.5);
-    padding: 10px 0;
+    padding: 5px 0;
 }
 
 #popup-body {
@@ -146,9 +146,9 @@ input:focus + .switch-slider {
 }
 
 input:checked + .switch-slider:before {
-    -webkit-transform: translateX(22px);
-    -ms-transform: translateX(22px);
-    transform: translateX(22px);
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
 }
 
 /* Rounded sliders */

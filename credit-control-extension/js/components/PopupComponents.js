@@ -87,12 +87,13 @@ class InstallmentsPlot extends React.Component {
     constructor(props) {
         super(props);
         // Set month information based on current month
-        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
         let monthData = [];
-        for (let i = new Date().getMonth(); i < 12; i++) {
+        const now = new Date();
+        for (let i = now.getMonth(); i < 12; i++) {
             monthData.push(months[i]);
         }
-        for (let i = 0; i < new Date().getMonth(); i++) {
+        for (let i = 0; i < now.getMonth(); i++) {
             monthData.push(months[i]);
         }
 
@@ -159,7 +160,7 @@ class InstallmentsPlot extends React.Component {
         let chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ', 'JAN', 'FEV'],
+                labels: this.state.months,
                 datasets: [{
                     label: 'Próximas faturas',
                     data: this.state.displayData,
@@ -371,7 +372,7 @@ class PopupStats extends React.Component {
 function PopupHeader() {
     return (
         <div id="header">
-            <img src="../../images/nubank_logo_offwhite.png" height="40" alt="Nubank Logo" className="center"/>
+            <img src="../../images/logo-white.png" height="40" alt="Nubank Logo" className="center"/>
         </div>
     );
 }

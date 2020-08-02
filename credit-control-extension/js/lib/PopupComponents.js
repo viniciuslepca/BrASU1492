@@ -153,12 +153,13 @@ var InstallmentsPlot = function (_React$Component4) {
         // Set month information based on current month
         var _this4 = _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).call(this, props));
 
-        var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        var months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
         var monthData = [];
-        for (var i = new Date().getMonth(); i < 12; i++) {
+        var now = new Date();
+        for (var i = now.getMonth(); i < 12; i++) {
             monthData.push(months[i]);
         }
-        for (var _i = 0; _i < new Date().getMonth(); _i++) {
+        for (var _i = 0; _i < now.getMonth(); _i++) {
             monthData.push(months[_i]);
         }
 
@@ -228,7 +229,7 @@ var InstallmentsPlot = function (_React$Component4) {
             var chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ', 'JAN', 'FEV'],
+                    labels: this.state.months,
                     datasets: [{
                         label: 'Próximas faturas',
                         data: this.state.displayData,
@@ -511,7 +512,7 @@ function PopupHeader() {
     return React.createElement(
         "div",
         { id: "header" },
-        React.createElement("img", { src: "../../images/nubank_logo_offwhite.png", height: "40", alt: "Nubank Logo", className: "center" })
+        React.createElement("img", { src: "../../images/logo-white.png", height: "40", alt: "Nubank Logo", className: "center" })
     );
 }
 
