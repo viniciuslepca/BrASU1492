@@ -113,7 +113,7 @@ class InstallmentsPlot extends React.Component {
         const recommendedLimit = parseFloat((0.3 * this.props.income).toFixed(2));
         let recLimLine = [];
         for (let i = 0; i < dataVals.length; i++) {
-            recLimLine.push(recommendedLimit);
+            recLimLine.push(recommendedLimit / (i + 1.0));
         }
         // Define the credit limit (70% of income)
         // TODO - pull actual value from database
@@ -149,9 +149,18 @@ class InstallmentsPlot extends React.Component {
         }
 
         // Record everything in the state
-        this.state = {months: monthData, dataVals: dataVals, displayData: displayData, colors: colors,
-            backgroundColors: backgroundColors, borderColors: borderColors, recommendedLimit: recommendedLimit,
-            recLimLine: recLimLine, creditLimit: creditLimit, creditLimitLine: creditLimitLine, chart: null};
+        this.state = {
+            months: monthData,
+            dataVals: dataVals,
+            displayData: displayData,
+            colors: colors,
+            backgroundColors: backgroundColors,
+            borderColors: borderColors,
+            recommendedLimit: recommendedLimit,
+            recLimLine: recLimLine,
+            creditLimit: creditLimit,
+            creditLimitLine: creditLimitLine,
+            chart: null};
     }
 
     componentDidMount() {

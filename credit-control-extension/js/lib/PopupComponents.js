@@ -179,7 +179,7 @@ var InstallmentsPlot = function (_React$Component4) {
         var recommendedLimit = parseFloat((0.3 * _this4.props.income).toFixed(2));
         var recLimLine = [];
         for (var _i2 = 0; _i2 < dataVals.length; _i2++) {
-            recLimLine.push(recommendedLimit);
+            recLimLine.push(recommendedLimit / (_i2 + 1.0));
         }
         // Define the credit limit (70% of income)
         // TODO - pull actual value from database
@@ -215,9 +215,18 @@ var InstallmentsPlot = function (_React$Component4) {
         }
 
         // Record everything in the state
-        _this4.state = { months: monthData, dataVals: dataVals, displayData: displayData, colors: colors,
-            backgroundColors: backgroundColors, borderColors: borderColors, recommendedLimit: recommendedLimit,
-            recLimLine: recLimLine, creditLimit: creditLimit, creditLimitLine: creditLimitLine, chart: null };
+        _this4.state = {
+            months: monthData,
+            dataVals: dataVals,
+            displayData: displayData,
+            colors: colors,
+            backgroundColors: backgroundColors,
+            borderColors: borderColors,
+            recommendedLimit: recommendedLimit,
+            recLimLine: recLimLine,
+            creditLimit: creditLimit,
+            creditLimitLine: creditLimitLine,
+            chart: null };
         return _this4;
     }
 
