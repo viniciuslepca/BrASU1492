@@ -30,7 +30,7 @@ var PopupComponents = function (_React$Component) {
                     React.createElement(
                         "div",
                         { id: "popup-body" },
-                        React.createElement(PopupStats, { price: this.props.priceVal, income: this.state.bg.income, educationalFacts: this.state.bg.educationalFacts }),
+                        React.createElement(PopupStats, { price: this.props.priceVal, income: this.state.bg.income }),
                         React.createElement(ItemPrice, { price: this.props.priceStr }),
                         React.createElement(ContentComponents, { price: this.props.priceVal, income: this.state.bg.income,
                             bills: this.state.bg.bills, predictedExpenses: parseFloat(this.state.bg.predictedExpenses.toFixed(2)) }),

@@ -11,7 +11,7 @@ class PopupComponents extends React.Component {
                 <div>
                     <PopupHeader/>
                     <div id="popup-body">
-                        <PopupStats price={this.props.priceVal} income={this.state.bg.income} educationalFacts={this.state.bg.educationalFacts}/>
+                        <PopupStats price={this.props.priceVal} income={this.state.bg.income}/>
                         <ItemPrice price={this.props.priceStr}/>
                         <ContentComponents price={this.props.priceVal} income={this.state.bg.income}
                                            bills={this.state.bg.bills} predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
