@@ -264,13 +264,13 @@ class InstallmentsPlot extends React.Component {
             limitLine = this.state.expenseCeilingLine;
             label = this.state.expenseCeilingLabel;
             for (let i = 0; i < newData.length; i++) {
-                newData[i] = parseFloat(newData[i]) + this.props.predictedExpenses;
+                newData[i] = (parseFloat(newData[i]) + this.props.predictedExpenses).toFixed(2);
             }
         } else {
             limitLine = this.state.recLimLine;
             label = this.state.maximumInstallmentsLabel;
             for (let i = 0; i < newData.length; i++) {
-                newData[i] = parseFloat(newData[i]) - this.props.predictedExpenses;
+                newData[i] = (parseFloat(newData[i]) - this.props.predictedExpenses).toFixed(2);
             }
         }
         // Update colors

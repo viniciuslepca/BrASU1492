@@ -348,13 +348,13 @@ var InstallmentsPlot = function (_React$Component4) {
                 limitLine = this.state.expenseCeilingLine;
                 label = this.state.expenseCeilingLabel;
                 for (var i = 0; i < newData.length; i++) {
-                    newData[i] = parseFloat(newData[i]) + this.props.predictedExpenses;
+                    newData[i] = (parseFloat(newData[i]) + this.props.predictedExpenses).toFixed(2);
                 }
             } else {
                 limitLine = this.state.recLimLine;
                 label = this.state.maximumInstallmentsLabel;
                 for (var _i3 = 0; _i3 < newData.length; _i3++) {
-                    newData[_i3] = parseFloat(newData[_i3]) - this.props.predictedExpenses;
+                    newData[_i3] = (parseFloat(newData[_i3]) - this.props.predictedExpenses).toFixed(2);
                 }
             }
             // Update colors
