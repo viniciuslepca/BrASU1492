@@ -205,9 +205,9 @@ var InstallmentsPlot = function (_React$Component4) {
         for (var _i3 = 0; _i3 < dataVals.length; _i3++) {
             if (_i3 === 0) {
                 // Assuming the initial state is a single installment
-                displayData.push(dataVals[_i3] + props.price);
+                displayData.push((dataVals[_i3] + props.price).toFixed(2));
             } else {
-                displayData.push(dataVals[_i3]);
+                displayData.push(dataVals[_i3].toFixed(2));
             }
         }
         // Set bar colors based on whether they're lower or higher than recommended
@@ -240,6 +240,7 @@ var InstallmentsPlot = function (_React$Component4) {
             // creditLimit: creditLimit,
             // creditLimitLine: creditLimitLine,
             chart: null
+
         };
         return _this4;
     }
@@ -328,7 +329,7 @@ var InstallmentsPlot = function (_React$Component4) {
         }
     }, {
         key: "setColors",
-        value: function setColors(newData, recommendedLimit) {
+        value: function setColors(newData, recommendedLimits) {
             var backgroundColors = [];
             var borderColors = [];
             for (var i = 0; i < newData.length; i++) {
@@ -336,7 +337,7 @@ var InstallmentsPlot = function (_React$Component4) {
                 //     backgroundColors.push(this.state.colors.fillBlack);
                 //     borderColors.push(this.state.colors.borderBlack);
                 // } else
-                if (newData[i] >= recommendedLimit) {
+                if (newData[i] >= parseFloat(recommendedLimits[i])) {
                     backgroundColors.push(this.state.colors.fillRed);
                     borderColors.push(this.state.colors.borderRed);
                 } else {
@@ -394,9 +395,10 @@ var InstallmentsPlot = function (_React$Component4) {
             monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
             for (var _i7 = 0; _i7 < this.props.installments; _i7++) {
                 newData[_i7] += monthlyInstallment;
+                newData[_i7] = newData[_i7].toFixed(2);
             }
             // Update colors
-            var colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data[0]);
+            var colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data);
             var backgroundColors = colorResults[0];
             var borderColors = colorResults[1];
 

@@ -139,9 +139,9 @@ class InstallmentsPlot extends React.Component {
         for (let i = 0; i < dataVals.length; i++) {
             if (i === 0) {
                 // Assuming the initial state is a single installment
-                displayData.push(dataVals[i] + props.price);
+                displayData.push((dataVals[i] + props.price).toFixed(2));
             } else {
-                displayData.push(dataVals[i]);
+                displayData.push(dataVals[i].toFixed(2));
             }
         }
         // Set bar colors based on whether they're lower or higher than recommended
@@ -173,7 +173,8 @@ class InstallmentsPlot extends React.Component {
             recLimLine: recLimLine,
             // creditLimit: creditLimit,
             // creditLimitLine: creditLimitLine,
-            chart: null
+            chart: null,
+
         };
     }
 
@@ -258,7 +259,7 @@ class InstallmentsPlot extends React.Component {
         }
     }
 
-    setColors(newData, recommendedLimit) {
+    setColors(newData, recommendedLimits) {
         let backgroundColors = [];
         let borderColors = [];
         for (let i = 0; i < newData.length; i++) {
@@ -266,7 +267,7 @@ class InstallmentsPlot extends React.Component {
             //     backgroundColors.push(this.state.colors.fillBlack);
             //     borderColors.push(this.state.colors.borderBlack);
             // } else
-            if (newData[i] >= recommendedLimit) {
+            if (newData[i] >= parseFloat(recommendedLimits[i])) {
                 backgroundColors.push(this.state.colors.fillRed);
                 borderColors.push(this.state.colors.borderRed);
             } else {
@@ -322,9 +323,10 @@ class InstallmentsPlot extends React.Component {
         monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
         for (let i = 0; i < this.props.installments; i++) {
             newData[i] += monthlyInstallment;
+            newData[i] = newData[i].toFixed(2);
         }
         // Update colors
-        const colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data[0]);
+        const colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data);
         const backgroundColors = colorResults[0];
         const borderColors = colorResults[1];
 
