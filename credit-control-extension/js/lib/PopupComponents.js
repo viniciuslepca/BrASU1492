@@ -202,6 +202,8 @@ var InstallmentsPlot = function (_React$Component4) {
             backgroundColors: backgroundColors,
             borderColors: borderColors,
             recLimLine: recLimLine,
+            maximumInstallmentsLabel: 'Fatura máxima recomendada',
+            expenseCeilingLabel: 'Limite de gastos mensais',
             expenseCeilingLine: expenseCeilingLine,
             chart: null
         };
@@ -261,7 +263,7 @@ var InstallmentsPlot = function (_React$Component4) {
                         borderColor: this.state.borderColors,
                         borderWidth: 1
                     }, {
-                        label: 'Fatura máxima recomendada',
+                        label: this.state.maximumInstallmentsLabel,
                         data: this.state.recLimLine,
                         backgroundColor: "rgba(0,0,0,0)",
                         borderColor: this.state.colors.fillBlack,
@@ -341,13 +343,16 @@ var InstallmentsPlot = function (_React$Component4) {
             // Update future bills and recommended limit
             var newData = this.state.chart.data.datasets[0].data;
             var limitLine = null;
+            var label = null;
             if (this.props.includePredicted) {
                 limitLine = this.state.expenseCeilingLine;
+                label = this.state.expenseCeilingLabel;
                 for (var i = 0; i < newData.length; i++) {
                     newData[i] = parseFloat(newData[i]) + this.props.predictedExpenses;
                 }
             } else {
                 limitLine = this.state.recLimLine;
+                label = this.state.maximumInstallmentsLabel;
                 for (var _i3 = 0; _i3 < newData.length; _i3++) {
                     newData[_i3] = parseFloat(newData[_i3]) - this.props.predictedExpenses;
                 }
@@ -363,6 +368,7 @@ var InstallmentsPlot = function (_React$Component4) {
             this.state.chart.data.datasets[0].backgroundColor = backgroundColors;
             this.state.chart.data.datasets[0].borderColor = borderColors;
             this.state.chart.data.datasets[1].data = limitLine;
+            this.state.chart.data.datasets[1].label = label;
             this.state.chart.update();
         }
     }, {
