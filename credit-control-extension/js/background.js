@@ -1,6 +1,7 @@
 window.priceStr = null;
 window.priceVal = null;
 window.incomePercentTrigger = 0.1;
+window.expenseCeiling = 1600;
 window.educationalFacts = [];
 window.educationalFacts.push("84% dos consumidores já fizeram compras por impulso");
 window.educationalFacts.push("Compras por impulso representam quase 40% das compras online");

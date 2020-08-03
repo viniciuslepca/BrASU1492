@@ -1,3 +1,5 @@
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -33,7 +35,7 @@ var PopupComponents = function (_React$Component) {
                         React.createElement(PopupStats, { price: this.props.priceVal, income: this.state.bg.income }),
                         React.createElement(ItemPrice, { price: this.props.priceStr }),
                         React.createElement(ContentComponents, { price: this.props.priceVal, income: this.state.bg.income,
-                            bills: this.state.bg.bills,
+                            bills: this.state.bg.bills, expenseCeiling: this.state.bg.expenseCeiling,
                             predictedExpenses: parseFloat(this.state.bg.predictedExpenses.toFixed(2)) }),
                         React.createElement(LearnMore, { educationalFacts: this.state.bg.educationalFacts })
                     )
@@ -96,6 +98,7 @@ var ContentComponents = function (_React$Component2) {
                 React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted,
                     predictedExpenses: this.props.predictedExpenses,
                     price: this.props.price, installments: this.state.installments,
+                    expenseCeiling: this.props.expenseCeiling,
                     income: this.props.income, bills: this.props.bills })
             );
         }
@@ -157,77 +160,40 @@ var InstallmentsPlot = function (_React$Component4) {
         // Set month information based on current month
         var _this4 = _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).call(this, props));
 
-        var months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-        var monthData = [];
-        var now = new Date();
-        for (var i = now.getMonth(); i < 12; i++) {
-            monthData.push(months[i]);
-        }
-        for (var _i = 0; _i < now.getMonth(); _i++) {
-            monthData.push(months[_i]);
-        }
-
-        var dataVals = _this4.props.bills;
-        // Set basic colors for the plot
-        var fillGreen = "rgba(147, 196, 45, 0.5)";
-        var borderGreen = "rgba(147, 196, 45, 1)";
-        var fillRed = "rgba(229, 97, 92, 0.5)";
-        var borderRed = "rgba(229, 97, 92, 1)";
-        var fillBlack = "rgba(61, 61, 61, 0.5)";
-        var borderBlack = "rgba(61, 61, 61, 1)";
-        var opaquePurple = "rgba(158, 27, 209, 1)";
-        var transparentPurple = "rgba(158, 27, 209, 0.2)";
-        var colors = {
-            fillGreen: fillGreen,
-            borderGreen: borderGreen,
-            fillRed: fillRed,
-            borderRed: borderRed,
-            fillBlack: fillBlack,
-            borderBlack: borderBlack,
-            opaquePurple: opaquePurple,
-            transparentPurple: transparentPurple
-        };
+        var monthData = _this4.defineMonthList();
+        // Set basic colors to be used
+        var colors = _this4.defineBasicColors();
         // Define recommended maximum monthly expense (30% of income)
+        var dataVals = _this4.props.bills;
         var recommendedLimit = parseFloat((0.3 * _this4.props.income).toFixed(2));
         var recLimLine = [];
-        for (var _i2 = 0; _i2 < dataVals.length; _i2++) {
-            recLimLine.push((recommendedLimit / (_i2 + 1.0)).toFixed(2));
+        for (var i = 0; i < dataVals.length; i++) {
+            recLimLine.push((recommendedLimit / (i + 1.0)).toFixed(2));
         }
-        // Define the credit limit (70% of income)
-        // TODO - pull actual value from database
-        // const creditLimit = parseFloat((1 * this.props.income).toFixed(2));
-        // let creditLimitLine = [];
-        // for (let i = 0; i < dataVals.length; i++) {
-        //     creditLimitLine.push(creditLimit);
-        // }
+
+        // Define the expense ceiling line
+        var expenseCeilingLine = Array(dataVals.length).fill(props.expenseCeiling);
+
         // Include price of the item in 1 installment for first render
         var displayData = [];
-        for (var _i3 = 0; _i3 < dataVals.length; _i3++) {
-            if (_i3 === 0) {
+        for (var _i = 0; _i < dataVals.length; _i++) {
+            if (_i === 0) {
                 // Assuming the initial state is a single installment
-                displayData.push((dataVals[_i3] + props.price).toFixed(2));
+                displayData.push((dataVals[_i] + props.price).toFixed(2));
             } else {
-                displayData.push(dataVals[_i3].toFixed(2));
+                displayData.push(dataVals[_i].toFixed(2));
             }
         }
         // Set bar colors based on whether they're lower or higher than recommended
-        var backgroundColors = [];
-        var borderColors = [];
-        for (var _i4 = 0; _i4 < displayData.length; _i4++) {
-            // if (displayData[i] >= creditLimit) {
-            //     backgroundColors.push(colors.fillBlack);
-            //     borderColors.push(colors.borderBlack);
-            // } else
-            if (displayData[_i4] >= recommendedLimit) {
-                backgroundColors.push(colors.fillRed);
-                borderColors.push(colors.borderRed);
-            } else {
-                backgroundColors.push(colors.fillGreen);
-                borderColors.push(colors.borderGreen);
-            }
-        }
+
+        var _this4$setColors = _this4.setColors(displayData, recLimLine, colors),
+            _this4$setColors2 = _slicedToArray(_this4$setColors, 2),
+            backgroundColors = _this4$setColors2[0],
+            borderColors = _this4$setColors2[1];
 
         // Record everything in the state
+
+
         _this4.state = {
             months: monthData,
             dataVals: dataVals,
@@ -236,15 +202,50 @@ var InstallmentsPlot = function (_React$Component4) {
             backgroundColors: backgroundColors,
             borderColors: borderColors,
             recLimLine: recLimLine,
-            // creditLimit: creditLimit,
-            // creditLimitLine: creditLimitLine,
+            expenseCeilingLine: expenseCeilingLine,
             chart: null
-
         };
         return _this4;
     }
 
     _createClass(InstallmentsPlot, [{
+        key: "defineMonthList",
+        value: function defineMonthList() {
+            var months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+            var monthData = [];
+            var now = new Date();
+            for (var i = now.getMonth(); i < 12; i++) {
+                monthData.push(months[i]);
+            }
+            for (var _i2 = 0; _i2 < now.getMonth(); _i2++) {
+                monthData.push(months[_i2]);
+            }
+            return monthData;
+        }
+    }, {
+        key: "defineBasicColors",
+        value: function defineBasicColors() {
+            // Set basic colors for the plot
+            var fillGreen = "rgba(147, 196, 45, 0.5)";
+            var borderGreen = "rgba(147, 196, 45, 1)";
+            var fillRed = "rgba(229, 97, 92, 0.5)";
+            var borderRed = "rgba(229, 97, 92, 1)";
+            var fillBlack = "rgba(61, 61, 61, 0.5)";
+            var borderBlack = "rgba(61, 61, 61, 1)";
+            var opaquePurple = "rgba(158, 27, 209, 1)";
+            var transparentPurple = "rgba(158, 27, 209, 0.2)";
+            return {
+                fillGreen: fillGreen,
+                borderGreen: borderGreen,
+                fillRed: fillRed,
+                borderRed: borderRed,
+                fillBlack: fillBlack,
+                borderBlack: borderBlack,
+                opaquePurple: opaquePurple,
+                transparentPurple: transparentPurple
+            };
+        }
+    }, {
         key: "componentDidMount",
         value: function componentDidMount() {
             // Render the plot
@@ -269,16 +270,6 @@ var InstallmentsPlot = function (_React$Component4) {
                         pointRadius: 2,
                         pointHitRadius: 3,
                         type: 'line'
-                        // , {
-                        //     label: 'Limite do cartão',
-                        //     data: this.state.creditLimitLine,
-                        //     backgroundColor: "rgba(0,0,0,0)",
-                        //     borderColor: this.state.colors.fillRed,
-                        //     borderDash: [15, 5],
-                        //     borderWidth: 1.5,
-                        //     pointRadius: 0,
-                        //     type: 'line'
-                        // }
                     }]
                 },
                 options: {
@@ -329,19 +320,17 @@ var InstallmentsPlot = function (_React$Component4) {
     }, {
         key: "setColors",
         value: function setColors(newData, recommendedLimits) {
+            var colors = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.state.colors;
+
             var backgroundColors = [];
             var borderColors = [];
             for (var i = 0; i < newData.length; i++) {
-                // if (newData[i] >= this.state.creditLimit) {
-                //     backgroundColors.push(this.state.colors.fillBlack);
-                //     borderColors.push(this.state.colors.borderBlack);
-                // } else
                 if (newData[i] >= parseFloat(recommendedLimits[i])) {
-                    backgroundColors.push(this.state.colors.fillRed);
-                    borderColors.push(this.state.colors.borderRed);
+                    backgroundColors.push(colors.fillRed);
+                    borderColors.push(colors.borderRed);
                 } else {
-                    backgroundColors.push(this.state.colors.fillGreen);
-                    borderColors.push(this.state.colors.borderGreen);
+                    backgroundColors.push(colors.fillGreen);
+                    borderColors.push(colors.borderGreen);
                 }
             }
             return [backgroundColors, borderColors];
@@ -351,28 +340,29 @@ var InstallmentsPlot = function (_React$Component4) {
         value: function updateIncludePredicted() {
             // Update future bills and recommended limit
             var newData = this.state.chart.data.datasets[0].data;
-            var newRecLim = this.state.chart.data.datasets[1].data;
-            var recLim = this.state.recLimLine;
+            var limitLine = null;
             if (this.props.includePredicted) {
+                limitLine = this.state.expenseCeilingLine;
                 for (var i = 0; i < newData.length; i++) {
-                    newData[i] += this.props.predictedExpenses;
-                    newRecLim[i] += this.props.predictedExpenses;
-                    recLim[i] += this.props.predictedExpenses;
+                    newData[i] = parseFloat(newData[i]) + this.props.predictedExpenses;
                 }
             } else {
-                for (var _i5 = 0; _i5 < newData.length; _i5++) {
-                    newData[_i5] -= this.props.predictedExpenses;
-                    newRecLim[_i5] -= this.props.predictedExpenses;
+                limitLine = this.state.recLimLine;
+                for (var _i3 = 0; _i3 < newData.length; _i3++) {
+                    newData[_i3] = parseFloat(newData[_i3]) - this.props.predictedExpenses;
                 }
             }
             // Update colors
-            var colorResults = this.setColors(newData, recLim);
-            var backgroundColors = colorResults[0];
-            var borderColors = colorResults[1];
+
+            var _setColors = this.setColors(newData, limitLine),
+                _setColors2 = _slicedToArray(_setColors, 2),
+                backgroundColors = _setColors2[0],
+                borderColors = _setColors2[1];
 
             this.state.chart.data.datasets[0].data = newData;
             this.state.chart.data.datasets[0].backgroundColor = backgroundColors;
             this.state.chart.data.datasets[0].borderColor = borderColors;
+            this.state.chart.data.datasets[1].data = limitLine;
             this.state.chart.update();
         }
     }, {
@@ -385,16 +375,16 @@ var InstallmentsPlot = function (_React$Component4) {
             }
             // Include predicted expenses if necessary
             if (this.props.includePredicted) {
-                for (var _i6 = 0; _i6 < newData.length; _i6++) {
-                    newData[_i6] += this.props.predictedExpenses;
+                for (var _i4 = 0; _i4 < newData.length; _i4++) {
+                    newData[_i4] += this.props.predictedExpenses;
                 }
             }
             // Add monthly installments
             var monthlyInstallment = this.props.price / this.props.installments;
             monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
-            for (var _i7 = 0; _i7 < this.props.installments; _i7++) {
-                newData[_i7] += monthlyInstallment;
-                newData[_i7] = newData[_i7].toFixed(2);
+            for (var _i5 = 0; _i5 < this.props.installments; _i5++) {
+                newData[_i5] += monthlyInstallment;
+                newData[_i5] = newData[_i5].toFixed(2);
             }
             // Update colors
             var colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data);

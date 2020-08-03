@@ -14,7 +14,7 @@ class PopupComponents extends React.Component {
                         <PopupStats price={this.props.priceVal} income={this.state.bg.income}/>
                         <ItemPrice price={this.props.priceStr}/>
                         <ContentComponents price={this.props.priceVal} income={this.state.bg.income}
-                                           bills={this.state.bg.bills}
+                                           bills={this.state.bg.bills} expenseCeiling={this.state.bg.expenseCeiling}
                                            predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
                         <LearnMore educationalFacts={this.state.bg.educationalFacts}/>
                     </div>
@@ -56,6 +56,7 @@ class ContentComponents extends React.Component {
                 <InstallmentsPlot includePredicted={this.state.includePredicted}
                                   predictedExpenses={this.props.predictedExpenses}
                                   price={this.props.price} installments={this.state.installments}
+                                  expenseCeiling={this.props.expenseCeiling}
                                   income={this.props.income} bills={this.props.bills}/>
             </div>
         )
@@ -91,49 +92,20 @@ class InstallmentsPlot extends React.Component {
     constructor(props) {
         super(props);
         // Set month information based on current month
-        const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-        let monthData = [];
-        const now = new Date();
-        for (let i = now.getMonth(); i < 12; i++) {
-            monthData.push(months[i]);
-        }
-        for (let i = 0; i < now.getMonth(); i++) {
-            monthData.push(months[i]);
-        }
-
-        const dataVals = this.props.bills;
-        // Set basic colors for the plot
-        const fillGreen = "rgba(147, 196, 45, 0.5)";
-        const borderGreen = "rgba(147, 196, 45, 1)";
-        const fillRed = "rgba(229, 97, 92, 0.5)";
-        const borderRed = "rgba(229, 97, 92, 1)";
-        const fillBlack = "rgba(61, 61, 61, 0.5)";
-        const borderBlack = "rgba(61, 61, 61, 1)";
-        const opaquePurple = "rgba(158, 27, 209, 1)";
-        const transparentPurple = "rgba(158, 27, 209, 0.2)";
-        const colors = {
-            fillGreen: fillGreen,
-            borderGreen: borderGreen,
-            fillRed: fillRed,
-            borderRed: borderRed,
-            fillBlack: fillBlack,
-            borderBlack: borderBlack,
-            opaquePurple: opaquePurple,
-            transparentPurple: transparentPurple
-        };
+        const monthData = this.defineMonthList();
+        // Set basic colors to be used
+        const colors = this.defineBasicColors();
         // Define recommended maximum monthly expense (30% of income)
+        const dataVals = this.props.bills;
         const recommendedLimit = parseFloat((0.3 * this.props.income).toFixed(2));
         let recLimLine = [];
         for (let i = 0; i < dataVals.length; i++) {
             recLimLine.push((recommendedLimit / (i + 1.0)).toFixed(2));
         }
-        // Define the credit limit (70% of income)
-        // TODO - pull actual value from database
-        // const creditLimit = parseFloat((1 * this.props.income).toFixed(2));
-        // let creditLimitLine = [];
-        // for (let i = 0; i < dataVals.length; i++) {
-        //     creditLimitLine.push(creditLimit);
-        // }
+
+        // Define the expense ceiling line
+        const expenseCeilingLine = Array(dataVals.length).fill(props.expenseCeiling);
+
         // Include price of the item in 1 installment for first render
         let displayData = [];
         for (let i = 0; i < dataVals.length; i++) {
@@ -145,21 +117,7 @@ class InstallmentsPlot extends React.Component {
             }
         }
         // Set bar colors based on whether they're lower or higher than recommended
-        let backgroundColors = [];
-        let borderColors = [];
-        for (let i = 0; i < displayData.length; i++) {
-            // if (displayData[i] >= creditLimit) {
-            //     backgroundColors.push(colors.fillBlack);
-            //     borderColors.push(colors.borderBlack);
-            // } else
-            if (displayData[i] >= recommendedLimit) {
-                backgroundColors.push(colors.fillRed);
-                borderColors.push(colors.borderRed);
-            } else {
-                backgroundColors.push(colors.fillGreen);
-                borderColors.push(colors.borderGreen);
-            }
-        }
+        const [backgroundColors, borderColors] = this.setColors(displayData, recLimLine, colors);
 
         // Record everything in the state
         this.state = {
@@ -170,10 +128,43 @@ class InstallmentsPlot extends React.Component {
             backgroundColors: backgroundColors,
             borderColors: borderColors,
             recLimLine: recLimLine,
-            // creditLimit: creditLimit,
-            // creditLimitLine: creditLimitLine,
-            chart: null,
+            expenseCeilingLine: expenseCeilingLine,
+            chart: null
+        };
+    }
 
+    defineMonthList() {
+        const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+        let monthData = [];
+        const now = new Date();
+        for (let i = now.getMonth(); i < 12; i++) {
+            monthData.push(months[i]);
+        }
+        for (let i = 0; i < now.getMonth(); i++) {
+            monthData.push(months[i]);
+        }
+        return monthData;
+    }
+
+    defineBasicColors() {
+        // Set basic colors for the plot
+        const fillGreen = "rgba(147, 196, 45, 0.5)";
+        const borderGreen = "rgba(147, 196, 45, 1)";
+        const fillRed = "rgba(229, 97, 92, 0.5)";
+        const borderRed = "rgba(229, 97, 92, 1)";
+        const fillBlack = "rgba(61, 61, 61, 0.5)";
+        const borderBlack = "rgba(61, 61, 61, 1)";
+        const opaquePurple = "rgba(158, 27, 209, 1)";
+        const transparentPurple = "rgba(158, 27, 209, 0.2)";
+        return {
+            fillGreen: fillGreen,
+            borderGreen: borderGreen,
+            fillRed: fillRed,
+            borderRed: borderRed,
+            fillBlack: fillBlack,
+            borderBlack: borderBlack,
+            opaquePurple: opaquePurple,
+            transparentPurple: transparentPurple
         };
     }
 
@@ -200,18 +191,7 @@ class InstallmentsPlot extends React.Component {
                     pointRadius: 2,
                     pointHitRadius: 3,
                     type: 'line'
-                }
-                    // , {
-                    //     label: 'Limite do cartão',
-                    //     data: this.state.creditLimitLine,
-                    //     backgroundColor: "rgba(0,0,0,0)",
-                    //     borderColor: this.state.colors.fillRed,
-                    //     borderDash: [15, 5],
-                    //     borderWidth: 1.5,
-                    //     pointRadius: 0,
-                    //     type: 'line'
-                    // }
-                ]
+                }]
             },
             options: {
                 scales: {
@@ -258,20 +238,16 @@ class InstallmentsPlot extends React.Component {
         }
     }
 
-    setColors(newData, recommendedLimits) {
+    setColors(newData, recommendedLimits, colors = this.state.colors) {
         let backgroundColors = [];
         let borderColors = [];
         for (let i = 0; i < newData.length; i++) {
-            // if (newData[i] >= this.state.creditLimit) {
-            //     backgroundColors.push(this.state.colors.fillBlack);
-            //     borderColors.push(this.state.colors.borderBlack);
-            // } else
             if (newData[i] >= parseFloat(recommendedLimits[i])) {
-                backgroundColors.push(this.state.colors.fillRed);
-                borderColors.push(this.state.colors.borderRed);
+                backgroundColors.push(colors.fillRed);
+                borderColors.push(colors.borderRed);
             } else {
-                backgroundColors.push(this.state.colors.fillGreen);
-                borderColors.push(this.state.colors.borderGreen);
+                backgroundColors.push(colors.fillGreen);
+                borderColors.push(colors.borderGreen);
             }
         }
         return [backgroundColors, borderColors];
@@ -280,28 +256,25 @@ class InstallmentsPlot extends React.Component {
     updateIncludePredicted() {
         // Update future bills and recommended limit
         let newData = this.state.chart.data.datasets[0].data;
-        let newRecLim = this.state.chart.data.datasets[1].data;
-        let recLim = this.state.recLimLine;
+        let limitLine = null;
         if (this.props.includePredicted) {
+            limitLine = this.state.expenseCeilingLine;
             for (let i = 0; i < newData.length; i++) {
-                newData[i] += this.props.predictedExpenses;
-                newRecLim[i] += this.props.predictedExpenses;
-                recLim[i] += this.props.predictedExpenses;
+                newData[i] = parseFloat(newData[i]) + this.props.predictedExpenses;
             }
         } else {
+            limitLine = this.state.recLimLine;
             for (let i = 0; i < newData.length; i++) {
-                newData[i] -= this.props.predictedExpenses;
-                newRecLim[i] -= this.props.predictedExpenses;
+                newData[i] = parseFloat(newData[i]) - this.props.predictedExpenses;
             }
         }
         // Update colors
-        const colorResults = this.setColors(newData, recLim);
-        const backgroundColors = colorResults[0];
-        const borderColors = colorResults[1];
+        const [backgroundColors, borderColors] = this.setColors(newData, limitLine);
 
         this.state.chart.data.datasets[0].data = newData;
         this.state.chart.data.datasets[0].backgroundColor = backgroundColors;
         this.state.chart.data.datasets[0].borderColor = borderColors;
+        this.state.chart.data.datasets[1].data = limitLine;
         this.state.chart.update();
     }
 
