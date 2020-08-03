@@ -33,7 +33,8 @@ var PopupComponents = function (_React$Component) {
                         React.createElement(PopupStats, { price: this.props.priceVal, income: this.state.bg.income }),
                         React.createElement(ItemPrice, { price: this.props.priceStr }),
                         React.createElement(ContentComponents, { price: this.props.priceVal, income: this.state.bg.income,
-                            bills: this.state.bg.bills, predictedExpenses: parseFloat(this.state.bg.predictedExpenses.toFixed(2)) }),
+                            bills: this.state.bg.bills,
+                            predictedExpenses: parseFloat(this.state.bg.predictedExpenses.toFixed(2)) }),
                         React.createElement(LearnMore, { educationalFacts: this.state.bg.educationalFacts })
                     )
                 );
@@ -89,10 +90,13 @@ var ContentComponents = function (_React$Component2) {
             return React.createElement(
                 "div",
                 null,
-                React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this), predictedExpenses: this.props.predictedExpenses }),
+                React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this),
+                    predictedExpenses: this.props.predictedExpenses }),
                 React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this), price: this.props.price }),
-                React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted, predictedExpenses: this.props.predictedExpenses,
-                    price: this.props.price, installments: this.state.installments, income: this.props.income, bills: this.props.bills })
+                React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted,
+                    predictedExpenses: this.props.predictedExpenses,
+                    price: this.props.price, installments: this.state.installments,
+                    income: this.props.income, bills: this.props.bills })
             );
         }
     }]);
@@ -173,39 +177,48 @@ var InstallmentsPlot = function (_React$Component4) {
         var borderBlack = "rgba(61, 61, 61, 1)";
         var opaquePurple = "rgba(158, 27, 209, 1)";
         var transparentPurple = "rgba(158, 27, 209, 0.2)";
-        var colors = { fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed,
-            fillBlack: fillBlack, borderBlack: borderBlack, opaquePurple: opaquePurple, transparentPurple: transparentPurple };
+        var colors = {
+            fillGreen: fillGreen,
+            borderGreen: borderGreen,
+            fillRed: fillRed,
+            borderRed: borderRed,
+            fillBlack: fillBlack,
+            borderBlack: borderBlack,
+            opaquePurple: opaquePurple,
+            transparentPurple: transparentPurple
+        };
         // Define recommended maximum monthly expense (30% of income)
         var recommendedLimit = parseFloat((0.3 * _this4.props.income).toFixed(2));
         var recLimLine = [];
         for (var _i2 = 0; _i2 < dataVals.length; _i2++) {
-            recLimLine.push(recommendedLimit / (_i2 + 1.0));
+            recLimLine.push((recommendedLimit / (_i2 + 1.0)).toFixed(2));
         }
         // Define the credit limit (70% of income)
         // TODO - pull actual value from database
-        var creditLimit = parseFloat((1 * _this4.props.income).toFixed(2));
-        var creditLimitLine = [];
-        for (var _i3 = 0; _i3 < dataVals.length; _i3++) {
-            creditLimitLine.push(creditLimit);
-        }
+        // const creditLimit = parseFloat((1 * this.props.income).toFixed(2));
+        // let creditLimitLine = [];
+        // for (let i = 0; i < dataVals.length; i++) {
+        //     creditLimitLine.push(creditLimit);
+        // }
         // Include price of the item in 1 installment for first render
         var displayData = [];
-        for (var _i4 = 0; _i4 < dataVals.length; _i4++) {
-            if (_i4 === 0) {
+        for (var _i3 = 0; _i3 < dataVals.length; _i3++) {
+            if (_i3 === 0) {
                 // Assuming the initial state is a single installment
-                displayData.push(dataVals[_i4] + props.price);
+                displayData.push(dataVals[_i3] + props.price);
             } else {
-                displayData.push(dataVals[_i4]);
+                displayData.push(dataVals[_i3]);
             }
         }
         // Set bar colors based on whether they're lower or higher than recommended
         var backgroundColors = [];
         var borderColors = [];
-        for (var _i5 = 0; _i5 < displayData.length; _i5++) {
-            if (displayData[_i5] >= creditLimit) {
-                backgroundColors.push(colors.fillBlack);
-                borderColors.push(colors.borderBlack);
-            } else if (displayData[_i5] >= recommendedLimit) {
+        for (var _i4 = 0; _i4 < displayData.length; _i4++) {
+            // if (displayData[i] >= creditLimit) {
+            //     backgroundColors.push(colors.fillBlack);
+            //     borderColors.push(colors.borderBlack);
+            // } else
+            if (displayData[_i4] >= recommendedLimit) {
                 backgroundColors.push(colors.fillRed);
                 borderColors.push(colors.borderRed);
             } else {
@@ -224,9 +237,10 @@ var InstallmentsPlot = function (_React$Component4) {
             borderColors: borderColors,
             recommendedLimit: recommendedLimit,
             recLimLine: recLimLine,
-            creditLimit: creditLimit,
-            creditLimitLine: creditLimitLine,
-            chart: null };
+            // creditLimit: creditLimit,
+            // creditLimitLine: creditLimitLine,
+            chart: null
+        };
         return _this4;
     }
 
@@ -252,17 +266,19 @@ var InstallmentsPlot = function (_React$Component4) {
                         borderColor: this.state.colors.fillBlack,
                         borderDash: [15, 5],
                         borderWidth: 1.5,
-                        pointRadius: 0,
+                        pointRadius: 2,
+                        pointHitRadius: 3,
                         type: 'line'
-                    }, {
-                        label: 'Limite do cartão',
-                        data: this.state.creditLimitLine,
-                        backgroundColor: "rgba(0,0,0,0)",
-                        borderColor: this.state.colors.fillRed,
-                        borderDash: [15, 5],
-                        borderWidth: 1.5,
-                        pointRadius: 0,
-                        type: 'line'
+                        // , {
+                        //     label: 'Limite do cartão',
+                        //     data: this.state.creditLimitLine,
+                        //     backgroundColor: "rgba(0,0,0,0)",
+                        //     borderColor: this.state.colors.fillRed,
+                        //     borderDash: [15, 5],
+                        //     borderWidth: 1.5,
+                        //     pointRadius: 0,
+                        //     type: 'line'
+                        // }
                     }]
                 },
                 options: {
@@ -316,10 +332,11 @@ var InstallmentsPlot = function (_React$Component4) {
             var backgroundColors = [];
             var borderColors = [];
             for (var i = 0; i < newData.length; i++) {
-                if (newData[i] >= this.state.creditLimit) {
-                    backgroundColors.push(this.state.colors.fillBlack);
-                    borderColors.push(this.state.colors.borderBlack);
-                } else if (newData[i] >= recommendedLimit) {
+                // if (newData[i] >= this.state.creditLimit) {
+                //     backgroundColors.push(this.state.colors.fillBlack);
+                //     borderColors.push(this.state.colors.borderBlack);
+                // } else
+                if (newData[i] >= recommendedLimit) {
                     backgroundColors.push(this.state.colors.fillRed);
                     borderColors.push(this.state.colors.borderRed);
                 } else {
@@ -343,9 +360,9 @@ var InstallmentsPlot = function (_React$Component4) {
                 }
                 recLim += this.props.predictedExpenses;
             } else {
-                for (var _i6 = 0; _i6 < newData.length; _i6++) {
-                    newData[_i6] -= this.props.predictedExpenses;
-                    newRecLim[_i6] -= this.props.predictedExpenses;
+                for (var _i5 = 0; _i5 < newData.length; _i5++) {
+                    newData[_i5] -= this.props.predictedExpenses;
+                    newRecLim[_i5] -= this.props.predictedExpenses;
                 }
             }
             // Update colors
@@ -368,15 +385,15 @@ var InstallmentsPlot = function (_React$Component4) {
             }
             // Include predicted expenses if necessary
             if (this.props.includePredicted) {
-                for (var _i7 = 0; _i7 < newData.length; _i7++) {
-                    newData[_i7] += this.props.predictedExpenses;
+                for (var _i6 = 0; _i6 < newData.length; _i6++) {
+                    newData[_i6] += this.props.predictedExpenses;
                 }
             }
             // Add monthly installments
             var monthlyInstallment = this.props.price / this.props.installments;
             monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
-            for (var _i8 = 0; _i8 < this.props.installments; _i8++) {
-                newData[_i8] += monthlyInstallment;
+            for (var _i7 = 0; _i7 < this.props.installments; _i7++) {
+                newData[_i7] += monthlyInstallment;
             }
             // Update colors
             var colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data[0]);
@@ -440,7 +457,8 @@ var InstallmentsSlider = function (_React$Component5) {
                     "X de R$",
                     this.state.monthlyInstallment
                 ),
-                React.createElement("input", { type: "range", min: "1", max: "12", defaultValue: "1", className: "slider", id: "installments-slider", onChange: function onChange(event) {
+                React.createElement("input", { type: "range", min: "1", max: "12", defaultValue: "1", className: "slider", id: "installments-slider",
+                    onChange: function onChange(event) {
                         return _this6.handleChange(event);
                     } })
             );
@@ -528,7 +546,8 @@ function PopupHeader() {
             { onClick: function onClick() {
                     return chrome.runtime.openOptionsPage();
                 } },
-            React.createElement("img", { src: "../../images/settings.png", title: "Configura\xE7\xF5es", alt: "Configura\xE7\xF5es" })
+            React.createElement("img", { src: "../../images/settings.png",
+                title: "Configura\xE7\xF5es", alt: "Configura\xE7\xF5es" })
         )
     );
 }

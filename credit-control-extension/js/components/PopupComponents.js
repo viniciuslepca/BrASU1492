@@ -7,14 +7,15 @@ class PopupComponents extends React.Component {
 
     render() {
         if (this.props.priceStr !== null) {
-            return(
+            return (
                 <div>
                     <PopupHeader/>
                     <div id="popup-body">
                         <PopupStats price={this.props.priceVal} income={this.state.bg.income}/>
                         <ItemPrice price={this.props.priceStr}/>
                         <ContentComponents price={this.props.priceVal} income={this.state.bg.income}
-                                           bills={this.state.bg.bills} predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
+                                           bills={this.state.bg.bills}
+                                           predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
                         <LearnMore educationalFacts={this.state.bg.educationalFacts}/>
                     </div>
                 </div>
@@ -49,10 +50,13 @@ class ContentComponents extends React.Component {
     render() {
         return (
             <div>
-                <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)} predictedExpenses={this.props.predictedExpenses}/>
+                <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)}
+                                      predictedExpenses={this.props.predictedExpenses}/>
                 <InstallmentsSlider setInstallments={this.setInstallments.bind(this)} price={this.props.price}/>
-                <InstallmentsPlot includePredicted={this.state.includePredicted} predictedExpenses={this.props.predictedExpenses}
-                            price={this.props.price} installments={this.state.installments} income={this.props.income} bills={this.props.bills}/>
+                <InstallmentsPlot includePredicted={this.state.includePredicted}
+                                  predictedExpenses={this.props.predictedExpenses}
+                                  price={this.props.price} installments={this.state.installments}
+                                  income={this.props.income} bills={this.props.bills}/>
             </div>
         )
     }
@@ -107,21 +111,29 @@ class InstallmentsPlot extends React.Component {
         const borderBlack = "rgba(61, 61, 61, 1)";
         const opaquePurple = "rgba(158, 27, 209, 1)";
         const transparentPurple = "rgba(158, 27, 209, 0.2)";
-        const colors = {fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed,
-            fillBlack: fillBlack, borderBlack: borderBlack, opaquePurple: opaquePurple, transparentPurple: transparentPurple};
+        const colors = {
+            fillGreen: fillGreen,
+            borderGreen: borderGreen,
+            fillRed: fillRed,
+            borderRed: borderRed,
+            fillBlack: fillBlack,
+            borderBlack: borderBlack,
+            opaquePurple: opaquePurple,
+            transparentPurple: transparentPurple
+        };
         // Define recommended maximum monthly expense (30% of income)
         const recommendedLimit = parseFloat((0.3 * this.props.income).toFixed(2));
         let recLimLine = [];
         for (let i = 0; i < dataVals.length; i++) {
-            recLimLine.push(recommendedLimit / (i + 1.0));
+            recLimLine.push((recommendedLimit / (i + 1.0)).toFixed(2));
         }
         // Define the credit limit (70% of income)
         // TODO - pull actual value from database
-        const creditLimit = parseFloat((1 * this.props.income).toFixed(2));
-        let creditLimitLine = [];
-        for (let i = 0; i < dataVals.length; i++) {
-            creditLimitLine.push(creditLimit);
-        }
+        // const creditLimit = parseFloat((1 * this.props.income).toFixed(2));
+        // let creditLimitLine = [];
+        // for (let i = 0; i < dataVals.length; i++) {
+        //     creditLimitLine.push(creditLimit);
+        // }
         // Include price of the item in 1 installment for first render
         let displayData = [];
         for (let i = 0; i < dataVals.length; i++) {
@@ -136,10 +148,11 @@ class InstallmentsPlot extends React.Component {
         let backgroundColors = [];
         let borderColors = [];
         for (let i = 0; i < displayData.length; i++) {
-            if (displayData[i] >= creditLimit) {
-                backgroundColors.push(colors.fillBlack);
-                borderColors.push(colors.borderBlack);
-            } else if (displayData[i] >= recommendedLimit) {
+            // if (displayData[i] >= creditLimit) {
+            //     backgroundColors.push(colors.fillBlack);
+            //     borderColors.push(colors.borderBlack);
+            // } else
+            if (displayData[i] >= recommendedLimit) {
                 backgroundColors.push(colors.fillRed);
                 borderColors.push(colors.borderRed);
             } else {
@@ -158,9 +171,10 @@ class InstallmentsPlot extends React.Component {
             borderColors: borderColors,
             recommendedLimit: recommendedLimit,
             recLimLine: recLimLine,
-            creditLimit: creditLimit,
-            creditLimitLine: creditLimitLine,
-            chart: null};
+            // creditLimit: creditLimit,
+            // creditLimitLine: creditLimitLine,
+            chart: null
+        };
     }
 
     componentDidMount() {
@@ -183,18 +197,20 @@ class InstallmentsPlot extends React.Component {
                     borderColor: this.state.colors.fillBlack,
                     borderDash: [15, 5],
                     borderWidth: 1.5,
-                    pointRadius: 0,
-                    type: 'line'
-                }, {
-                    label: 'Limite do cartão',
-                    data: this.state.creditLimitLine,
-                    backgroundColor: "rgba(0,0,0,0)",
-                    borderColor: this.state.colors.fillRed,
-                    borderDash: [15, 5],
-                    borderWidth: 1.5,
-                    pointRadius: 0,
+                    pointRadius: 2,
+                    pointHitRadius: 3,
                     type: 'line'
                 }
+                    // , {
+                    //     label: 'Limite do cartão',
+                    //     data: this.state.creditLimitLine,
+                    //     backgroundColor: "rgba(0,0,0,0)",
+                    //     borderColor: this.state.colors.fillRed,
+                    //     borderDash: [15, 5],
+                    //     borderWidth: 1.5,
+                    //     pointRadius: 0,
+                    //     type: 'line'
+                    // }
                 ]
             },
             options: {
@@ -246,10 +262,11 @@ class InstallmentsPlot extends React.Component {
         let backgroundColors = [];
         let borderColors = [];
         for (let i = 0; i < newData.length; i++) {
-            if (newData[i] >= this.state.creditLimit) {
-                backgroundColors.push(this.state.colors.fillBlack);
-                borderColors.push(this.state.colors.borderBlack);
-            } else if (newData[i] >= recommendedLimit) {
+            // if (newData[i] >= this.state.creditLimit) {
+            //     backgroundColors.push(this.state.colors.fillBlack);
+            //     borderColors.push(this.state.colors.borderBlack);
+            // } else
+            if (newData[i] >= recommendedLimit) {
                 backgroundColors.push(this.state.colors.fillRed);
                 borderColors.push(this.state.colors.borderRed);
             } else {
@@ -330,23 +347,25 @@ class InstallmentsPlot extends React.Component {
 class InstallmentsSlider extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.',',')};
+        this.state = {installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.', ',')};
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange() {
         const installments = document.getElementById("installments-slider").value;
         let monthlyInstallment = this.props.price / installments;
-        monthlyInstallment = monthlyInstallment.toFixed(2).replace('.',',');
+        monthlyInstallment = monthlyInstallment.toFixed(2).replace('.', ',');
         this.setState({installments: installments, monthlyInstallment: monthlyInstallment});
         this.props.setInstallments(installments);
     }
 
     render() {
-        return(
+        return (
             <div className="slide-container">
-                <p style={{marginBottom: 0, textAlign: "center"}}>Quero fazer essa compra em {this.state.installments}X de R${this.state.monthlyInstallment}</p>
-                <input type="range" min="1" max="12" defaultValue="1" className="slider" id="installments-slider" onChange={(event)=>this.handleChange(event)}/>
+                <p style={{marginBottom: 0, textAlign: "center"}}>Quero fazer essa compra em {this.state.installments}X
+                    de R${this.state.monthlyInstallment}</p>
+                <input type="range" min="1" max="12" defaultValue="1" className="slider" id="installments-slider"
+                       onChange={(event) => this.handleChange(event)}/>
             </div>
         );
     }
@@ -383,7 +402,9 @@ function PopupHeader() {
         <div id="header" style={{height: "40px"}}>
             <div style={{width: "40px"}}/>
             <img src="../../images/logo-white.png" style={{height: "100%"}} alt="Nubank Logo"/>
-            <button onClick={() => chrome.runtime.openOptionsPage()}><img src="../../images/settings.png" title="Configurações" alt="Configurações"/></button>
+            <button onClick={() => chrome.runtime.openOptionsPage()}><img src="../../images/settings.png"
+                                                                          title="Configurações" alt="Configurações"/>
+            </button>
         </div>
     );
 }

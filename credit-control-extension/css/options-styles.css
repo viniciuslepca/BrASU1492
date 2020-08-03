@@ -1,3 +1,8 @@
+:root {
+    --default-text-color: #666666;
+    --sidebar-background-color: #f1f1f1;
+}
+
 .sidebar {
     height: 100%;
     width: 200px;
@@ -6,8 +11,7 @@
     top: 0;
     left: 0;
     /*background-color: var(--main-purple);*/
-    background-color: #f1f1f1;
-    color: white;
+    background-color: var(--sidebar-background-color);
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -17,12 +21,18 @@
     padding: 6px 8px 6px 16px;
     text-decoration: none;
     font-size: 20px;
-    color: #666666;
+    font-weight: bold;
+    color: var(--default-text-color);
     display: block;
 }
 
 /* When you mouse over the navigation links, change their color */
 .sidebar a:hover {
+    color: rgba(199, 31, 255, 0.6);
+    cursor: pointer;
+}
+
+.sidebar a.active, .sidebar a.active:hover {
     color: var(--main-purple);
 }
 
@@ -42,6 +52,11 @@
 }
 
 #page-content {
-    margin: 0 auto;
-    max-width: 600px;
+    margin: 50px auto;
+    max-width: 800px;
+    color: var(--default-text-color)
+}
+
+#page-content h1 {
+    color: black;
 }

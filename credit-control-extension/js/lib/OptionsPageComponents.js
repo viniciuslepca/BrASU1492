@@ -12,17 +12,45 @@ var OptionsPageComponents = function (_React$Component) {
     function OptionsPageComponents(props) {
         _classCallCheck(this, OptionsPageComponents);
 
-        return _possibleConstructorReturn(this, (OptionsPageComponents.__proto__ || Object.getPrototypeOf(OptionsPageComponents)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (OptionsPageComponents.__proto__ || Object.getPrototypeOf(OptionsPageComponents)).call(this, props));
+
+        var pages = {
+            DEFINITIONS: "Definições",
+            ADD_EXPENSES: "Adicionar Gastos",
+            SUPPORT: "Suporte"
+        };
+
+        _this.state = {
+            activePage: pages.DEFINITIONS,
+            pages: pages
+        };
+
+        _this.setActivePage = _this.setActivePage.bind(_this);
+        return _this;
     }
 
     _createClass(OptionsPageComponents, [{
+        key: "setActivePage",
+        value: function setActivePage(page) {
+            this.setState({ activePage: page });
+        }
+    }, {
         key: "render",
         value: function render() {
             return React.createElement(
                 "div",
                 null,
-                React.createElement(Sidebar, null),
-                React.createElement(PageContent, null)
+                React.createElement(Sidebar, { activePage: this.state.activePage, pages: this.state.pages,
+                    setActivePage: this.setActivePage }),
+                React.createElement(
+                    "div",
+                    { id: "main" },
+                    React.createElement(
+                        "div",
+                        { id: "page-content" },
+                        React.createElement(PageContent, { activePage: this.state.activePage, pages: this.state.pages })
+                    )
+                )
             );
         }
     }]);
@@ -30,85 +58,135 @@ var OptionsPageComponents = function (_React$Component) {
     return OptionsPageComponents;
 }(React.Component);
 
-var PageContent = function (_React$Component2) {
-    _inherits(PageContent, _React$Component2);
+/**
+ * @return {null}
+ */
 
-    function PageContent() {
-        _classCallCheck(this, PageContent);
 
-        return _possibleConstructorReturn(this, (PageContent.__proto__ || Object.getPrototypeOf(PageContent)).apply(this, arguments));
+function PageContent(props) {
+    if (props.activePage === props.pages.DEFINITIONS) {
+        return React.createElement(DefinitionsPage, null);
+    } else if (props.activePage === props.pages.ADD_EXPENSES) {
+        return React.createElement(AddExpensesPage, null);
+    } else if (props.activePage === props.pages.SUPPORT) {
+        return React.createElement(SupportPage, null);
+    } else return null;
+}
+
+var DefinitionsPage = function (_React$Component2) {
+    _inherits(DefinitionsPage, _React$Component2);
+
+    function DefinitionsPage(props) {
+        _classCallCheck(this, DefinitionsPage);
+
+        return _possibleConstructorReturn(this, (DefinitionsPage.__proto__ || Object.getPrototypeOf(DefinitionsPage)).call(this, props));
     }
 
-    _createClass(PageContent, [{
+    _createClass(DefinitionsPage, [{
         key: "render",
         value: function render() {
             return React.createElement(
                 "div",
-                { id: "main" },
+                null,
                 React.createElement(
-                    "div",
-                    { id: "page-content" },
-                    "Hello world"
+                    "h1",
+                    null,
+                    "Insira sua renda mensal"
                 )
             );
         }
     }]);
 
-    return PageContent;
+    return DefinitionsPage;
 }(React.Component);
 
-var Sidebar = function (_React$Component3) {
-    _inherits(Sidebar, _React$Component3);
+var AddExpensesPage = function (_React$Component3) {
+    _inherits(AddExpensesPage, _React$Component3);
 
-    function Sidebar(props) {
-        _classCallCheck(this, Sidebar);
+    function AddExpensesPage(props) {
+        _classCallCheck(this, AddExpensesPage);
 
-        var _this3 = _possibleConstructorReturn(this, (Sidebar.__proto__ || Object.getPrototypeOf(Sidebar)).call(this, props));
-
-        var pages = {
-            DEFINITIONS: "definitions",
-            ADD_EXPENSES: "add expenses",
-            SUPPORT: "support"
-        };
-
-        _this3.state = {
-            activePage: pages.DEFINITIONS,
-            pages: pages
-        };
-
-        return _this3;
+        return _possibleConstructorReturn(this, (AddExpensesPage.__proto__ || Object.getPrototypeOf(AddExpensesPage)).call(this, props));
     }
 
-    _createClass(Sidebar, [{
+    _createClass(AddExpensesPage, [{
         key: "render",
         value: function render() {
             return React.createElement(
                 "div",
-                { className: "sidebar" },
-                React.createElement(SidebarHeader, null),
-                React.createElement(
-                    "a",
-                    { href: "#" },
-                    "Defini\xE7\xF5es"
-                ),
-                React.createElement(
-                    "a",
-                    { href: "#" },
-                    "Adicionar gastos"
-                ),
-                React.createElement(
-                    "a",
-                    { href: "#" },
-                    "Suporte"
-                )
+                null,
+                "Add expenses!"
             );
         }
     }]);
 
-    return Sidebar;
+    return AddExpensesPage;
 }(React.Component);
 
-function SidebarElement(props) {}
+var SupportPage = function (_React$Component4) {
+    _inherits(SupportPage, _React$Component4);
+
+    function SupportPage(props) {
+        _classCallCheck(this, SupportPage);
+
+        return _possibleConstructorReturn(this, (SupportPage.__proto__ || Object.getPrototypeOf(SupportPage)).call(this, props));
+    }
+
+    _createClass(SupportPage, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                null,
+                "Support!"
+            );
+        }
+    }]);
+
+    return SupportPage;
+}(React.Component);
+
+function Sidebar(props) {
+    return React.createElement(
+        "div",
+        { className: "sidebar" },
+        React.createElement(SidebarHeader, null),
+        React.createElement(SidebarElement, { setActivePage: props.setActivePage, activePage: props.activePage,
+            title: props.pages.DEFINITIONS }),
+        React.createElement(SidebarElement, { setActivePage: props.setActivePage, activePage: props.activePage,
+            title: props.pages.ADD_EXPENSES }),
+        React.createElement(SidebarElement, { setActivePage: props.setActivePage, activePage: props.activePage,
+            title: props.pages.SUPPORT })
+    );
+}
+
+var SidebarElement = function (_React$Component5) {
+    _inherits(SidebarElement, _React$Component5);
+
+    function SidebarElement() {
+        _classCallCheck(this, SidebarElement);
+
+        return _possibleConstructorReturn(this, (SidebarElement.__proto__ || Object.getPrototypeOf(SidebarElement)).apply(this, arguments));
+    }
+
+    _createClass(SidebarElement, [{
+        key: "render",
+        value: function render() {
+            var _this6 = this;
+
+            return React.createElement(
+                "a",
+                { className: this.props.activePage === this.props.title ? "active" : undefined,
+                    onClick: function onClick() {
+                        return _this6.props.setActivePage(_this6.props.title);
+                    } },
+                this.props.title
+            );
+        }
+    }]);
+
+    return SidebarElement;
+}(React.Component);
 
 function SidebarHeader() {
     return React.createElement(
