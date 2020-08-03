@@ -169,7 +169,6 @@ class InstallmentsPlot extends React.Component {
             colors: colors,
             backgroundColors: backgroundColors,
             borderColors: borderColors,
-            recommendedLimit: recommendedLimit,
             recLimLine: recLimLine,
             // creditLimit: creditLimit,
             // creditLimitLine: creditLimitLine,
@@ -282,13 +281,13 @@ class InstallmentsPlot extends React.Component {
         // Update future bills and recommended limit
         let newData = this.state.chart.data.datasets[0].data;
         let newRecLim = this.state.chart.data.datasets[1].data;
-        let recLim = this.state.recommendedLimit;
+        let recLim = this.state.recLimLine;
         if (this.props.includePredicted) {
             for (let i = 0; i < newData.length; i++) {
                 newData[i] += this.props.predictedExpenses;
                 newRecLim[i] += this.props.predictedExpenses;
+                recLim[i] += this.props.predictedExpenses;
             }
-            recLim += this.props.predictedExpenses;
         } else {
             for (let i = 0; i < newData.length; i++) {
                 newData[i] -= this.props.predictedExpenses;

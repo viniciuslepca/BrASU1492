@@ -235,7 +235,6 @@ var InstallmentsPlot = function (_React$Component4) {
             colors: colors,
             backgroundColors: backgroundColors,
             borderColors: borderColors,
-            recommendedLimit: recommendedLimit,
             recLimLine: recLimLine,
             // creditLimit: creditLimit,
             // creditLimitLine: creditLimitLine,
@@ -353,13 +352,13 @@ var InstallmentsPlot = function (_React$Component4) {
             // Update future bills and recommended limit
             var newData = this.state.chart.data.datasets[0].data;
             var newRecLim = this.state.chart.data.datasets[1].data;
-            var recLim = this.state.recommendedLimit;
+            var recLim = this.state.recLimLine;
             if (this.props.includePredicted) {
                 for (var i = 0; i < newData.length; i++) {
                     newData[i] += this.props.predictedExpenses;
                     newRecLim[i] += this.props.predictedExpenses;
+                    recLim[i] += this.props.predictedExpenses;
                 }
-                recLim += this.props.predictedExpenses;
             } else {
                 for (var _i5 = 0; _i5 < newData.length; _i5++) {
                     newData[_i5] -= this.props.predictedExpenses;
