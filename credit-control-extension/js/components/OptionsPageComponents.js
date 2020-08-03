@@ -5,7 +5,7 @@ class OptionsPageComponents extends React.Component {
 
     render() {
         return (
-            <div className="wrapper">
+            <div>
                 <Sidebar/>
                 <PageContent/>
             </div>
@@ -16,7 +16,11 @@ class OptionsPageComponents extends React.Component {
 class PageContent extends React.Component {
     render() {
         return (
-            <p>Hello world</p>
+            <div id="main">
+                <div id="page-content">
+                    Hello world
+                </div>
+            </div>
         )
     }
 }
@@ -40,9 +44,11 @@ class Sidebar extends React.Component {
 
     render() {
         return (
-            <div id="sidebar">
+            <div className="sidebar">
                 <SidebarHeader/>
-
+                <a href="#">Definições</a>
+                <a href="#">Adicionar gastos</a>
+                <a href="#">Suporte</a>
             </div>
         )
     }
@@ -54,8 +60,8 @@ function SidebarElement(props) {
 
 function SidebarHeader() {
     return (
-        <div className="sidebar-header">
-            <img src="../../images/logo-white.png" alt="Nu+ Logo"/>
+        <div id="sidebar-header">
+            <img src="../../images/logo-purple.png" alt="Nu+ Logo"/>
         </div>
     );
 }

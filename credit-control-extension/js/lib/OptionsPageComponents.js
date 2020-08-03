@@ -20,7 +20,7 @@ var OptionsPageComponents = function (_React$Component) {
         value: function render() {
             return React.createElement(
                 "div",
-                { className: "wrapper" },
+                null,
                 React.createElement(Sidebar, null),
                 React.createElement(PageContent, null)
             );
@@ -43,9 +43,13 @@ var PageContent = function (_React$Component2) {
         key: "render",
         value: function render() {
             return React.createElement(
-                "p",
-                null,
-                "Hello world"
+                "div",
+                { id: "main" },
+                React.createElement(
+                    "div",
+                    { id: "page-content" },
+                    "Hello world"
+                )
             );
         }
     }]);
@@ -79,39 +83,23 @@ var Sidebar = function (_React$Component3) {
         key: "render",
         value: function render() {
             return React.createElement(
-                "nav",
-                { id: "sidebar" },
+                "div",
+                { className: "sidebar" },
                 React.createElement(SidebarHeader, null),
                 React.createElement(
-                    "ul",
-                    { className: "list-unstyled sidebar-components" },
-                    React.createElement(
-                        "li",
-                        null,
-                        React.createElement(
-                            "a",
-                            { href: "#" },
-                            "Defini\xE7\xF5es"
-                        )
-                    ),
-                    React.createElement(
-                        "li",
-                        null,
-                        React.createElement(
-                            "a",
-                            { href: "#" },
-                            "Adicionar gastos"
-                        )
-                    ),
-                    React.createElement(
-                        "li",
-                        null,
-                        React.createElement(
-                            "a",
-                            { href: "#" },
-                            "Suporte"
-                        )
-                    )
+                    "a",
+                    { href: "#" },
+                    "Defini\xE7\xF5es"
+                ),
+                React.createElement(
+                    "a",
+                    { href: "#" },
+                    "Adicionar gastos"
+                ),
+                React.createElement(
+                    "a",
+                    { href: "#" },
+                    "Suporte"
                 )
             );
         }
@@ -125,8 +113,8 @@ function SidebarElement(props) {}
 function SidebarHeader() {
     return React.createElement(
         "div",
-        { className: "sidebar-header" },
-        React.createElement("img", { src: "../../images/logo-white.png", alt: "Nu+ Logo" })
+        { id: "sidebar-header" },
+        React.createElement("img", { src: "../../images/logo-purple.png", alt: "Nu+ Logo" })
     );
 }
 
