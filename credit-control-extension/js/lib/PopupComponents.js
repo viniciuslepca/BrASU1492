@@ -520,8 +520,16 @@ var PopupStats = function (_React$Component7) {
 function PopupHeader() {
     return React.createElement(
         "div",
-        { id: "header" },
-        React.createElement("img", { src: "../../images/logo-white.png", height: "40", alt: "Nubank Logo", className: "center" })
+        { id: "header", style: { height: "40px" } },
+        React.createElement("div", { style: { width: "40px" } }),
+        React.createElement("img", { src: "../../images/logo-white.png", style: { height: "100%" }, alt: "Nubank Logo" }),
+        React.createElement(
+            "button",
+            { onClick: function onClick() {
+                    return chrome.runtime.openOptionsPage();
+                } },
+            React.createElement("img", { src: "../../images/settings.png", title: "Configura\xE7\xF5es", alt: "Configura\xE7\xF5es" })
+        )
     );
 }
 

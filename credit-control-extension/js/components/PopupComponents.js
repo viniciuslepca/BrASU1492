@@ -380,8 +380,10 @@ class PopupStats extends React.Component {
 
 function PopupHeader() {
     return (
-        <div id="header">
-            <img src="../../images/logo-white.png" height="40" alt="Nubank Logo" className="center"/>
+        <div id="header" style={{height: "40px"}}>
+            <div style={{width: "40px"}}/>
+            <img src="../../images/logo-white.png" style={{height: "100%"}} alt="Nubank Logo"/>
+            <button onClick={() => chrome.runtime.openOptionsPage()}><img src="../../images/settings.png" title="Configurações" alt="Configurações"/></button>
         </div>
     );
 }
