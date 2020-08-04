@@ -20,9 +20,17 @@ var OptionsPageComponents = function (_React$Component) {
             SUPPORT: "Suporte"
         };
 
+        // Get firebase reference
+        Firebase.enableLogging(true);
+        var firebase = new Firebase('https://nubank-credit-control.firebaseio.com');
+        var userId = "u142652";
+        var userRef = firebase.child('users/' + userId);
+
         _this.state = {
             activePage: pages.DEFINITIONS,
-            pages: pages
+            pages: pages,
+            firebase: firebase,
+            userRef: userRef
         };
 
         _this.setActivePage = _this.setActivePage.bind(_this);
@@ -48,7 +56,8 @@ var OptionsPageComponents = function (_React$Component) {
                     React.createElement(
                         "div",
                         { id: "page-content" },
-                        React.createElement(PageContent, { activePage: this.state.activePage, pages: this.state.pages })
+                        React.createElement(PageContent, { activePage: this.state.activePage, pages: this.state.pages,
+                            firebase: this.state.firebase, userRef: this.state.userRef })
                     )
                 )
             );
@@ -65,9 +74,9 @@ var OptionsPageComponents = function (_React$Component) {
 
 function PageContent(props) {
     if (props.activePage === props.pages.DEFINITIONS) {
-        return React.createElement(DefinitionsPage, null);
+        return React.createElement(DefinitionsPage, { firebase: props.firebase, userRef: props.userRef });
     } else if (props.activePage === props.pages.ADD_EXPENSES) {
-        return React.createElement(AddExpensesPage, null);
+        return React.createElement(AddExpensesPage, { firebase: props.firebase, userRef: props.userRef });
     } else if (props.activePage === props.pages.SUPPORT) {
         return React.createElement(SupportPage, null);
     } else return null;
@@ -79,20 +88,45 @@ var DefinitionsPage = function (_React$Component2) {
     function DefinitionsPage(props) {
         _classCallCheck(this, DefinitionsPage);
 
-        return _possibleConstructorReturn(this, (DefinitionsPage.__proto__ || Object.getPrototypeOf(DefinitionsPage)).call(this, props));
+        var _this2 = _possibleConstructorReturn(this, (DefinitionsPage.__proto__ || Object.getPrototypeOf(DefinitionsPage)).call(this, props));
+
+        _this2.state = {
+            defaultIncome: undefined,
+            fixedExpenses: []
+        };
+        return _this2;
     }
 
     _createClass(DefinitionsPage, [{
+        key: "setDefaultIncome",
+        value: function setDefaultIncome() {
+            var _this3 = this;
+
+            // this.props.firebase.on("value", (snapshot) => {
+            //     this.setState({defaultIncome: snapshot.child("users").child("u142652").child("income").val()});
+            // });
+            this.props.userRef.on("value", function (snapshot) {
+                _this3.setState({ defaultIncome: snapshot.child("income").val() });
+            });
+        }
+    }, {
+        key: "setIncome",
+        value: function setIncome(value) {
+            return null;
+        }
+    }, {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            this.setDefaultIncome();
+        }
+    }, {
         key: "render",
         value: function render() {
             return React.createElement(
                 "div",
-                null,
-                React.createElement(
-                    "h1",
-                    null,
-                    "Insira sua renda mensal"
-                )
+                { id: "definitions-page" },
+                React.createElement(IncomeForm, { defaultIncome: this.state.defaultIncome }),
+                React.createElement(FixedExpensesForm, null)
             );
         }
     }]);
@@ -100,8 +134,65 @@ var DefinitionsPage = function (_React$Component2) {
     return DefinitionsPage;
 }(React.Component);
 
-var AddExpensesPage = function (_React$Component3) {
-    _inherits(AddExpensesPage, _React$Component3);
+var IncomeForm = function (_React$Component3) {
+    _inherits(IncomeForm, _React$Component3);
+
+    function IncomeForm() {
+        _classCallCheck(this, IncomeForm);
+
+        return _possibleConstructorReturn(this, (IncomeForm.__proto__ || Object.getPrototypeOf(IncomeForm)).apply(this, arguments));
+    }
+
+    _createClass(IncomeForm, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                { id: "income-form" },
+                React.createElement(
+                    "h1",
+                    null,
+                    "Insira sua renda mensal"
+                ),
+                "\xA0\xA0\xA0\xA0",
+                React.createElement(
+                    "span",
+                    null,
+                    "R$ "
+                ),
+                React.createElement("input", { onBlur: function onBlur(event) {
+                        return console.log(event.target.value);
+                    },
+                    type: "number", min: "0.01", step: "0.01",
+                    defaultValue: this.props.defaultIncome })
+            );
+        }
+    }]);
+
+    return IncomeForm;
+}(React.Component);
+
+var FixedExpensesForm = function (_React$Component4) {
+    _inherits(FixedExpensesForm, _React$Component4);
+
+    function FixedExpensesForm() {
+        _classCallCheck(this, FixedExpensesForm);
+
+        return _possibleConstructorReturn(this, (FixedExpensesForm.__proto__ || Object.getPrototypeOf(FixedExpensesForm)).apply(this, arguments));
+    }
+
+    _createClass(FixedExpensesForm, [{
+        key: "render",
+        value: function render() {
+            return null;
+        }
+    }]);
+
+    return FixedExpensesForm;
+}(React.Component);
+
+var AddExpensesPage = function (_React$Component5) {
+    _inherits(AddExpensesPage, _React$Component5);
 
     function AddExpensesPage(props) {
         _classCallCheck(this, AddExpensesPage);
@@ -123,8 +214,8 @@ var AddExpensesPage = function (_React$Component3) {
     return AddExpensesPage;
 }(React.Component);
 
-var SupportPage = function (_React$Component4) {
-    _inherits(SupportPage, _React$Component4);
+var SupportPage = function (_React$Component6) {
+    _inherits(SupportPage, _React$Component6);
 
     function SupportPage(props) {
         _classCallCheck(this, SupportPage);
@@ -160,8 +251,8 @@ function Sidebar(props) {
     );
 }
 
-var SidebarElement = function (_React$Component5) {
-    _inherits(SidebarElement, _React$Component5);
+var SidebarElement = function (_React$Component7) {
+    _inherits(SidebarElement, _React$Component7);
 
     function SidebarElement() {
         _classCallCheck(this, SidebarElement);
@@ -172,13 +263,13 @@ var SidebarElement = function (_React$Component5) {
     _createClass(SidebarElement, [{
         key: "render",
         value: function render() {
-            var _this6 = this;
+            var _this9 = this;
 
             return React.createElement(
                 "a",
                 { className: this.props.activePage === this.props.title ? "active" : undefined,
                     onClick: function onClick() {
-                        return _this6.props.setActivePage(_this6.props.title);
+                        return _this9.props.setActivePage(_this9.props.title);
                     } },
                 this.props.title
             );

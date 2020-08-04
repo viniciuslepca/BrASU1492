@@ -8,9 +8,17 @@ class OptionsPageComponents extends React.Component {
             SUPPORT: "Suporte"
         };
 
+        // Get firebase reference
+        Firebase.enableLogging(true);
+        let firebase = new Firebase('https://nubank-credit-control.firebaseio.com');
+        const userId = "u142652";
+        let userRef = firebase.child('users/' + userId);
+
         this.state = {
             activePage: pages.DEFINITIONS,
-            pages: pages
+            pages: pages,
+            firebase: firebase,
+            userRef: userRef
         };
 
         this.setActivePage = this.setActivePage.bind(this);
@@ -27,7 +35,8 @@ class OptionsPageComponents extends React.Component {
                          setActivePage={this.setActivePage}/>
                 <div id="main">
                     <div id="page-content">
-                        <PageContent activePage={this.state.activePage} pages={this.state.pages}/>
+                        <PageContent activePage={this.state.activePage} pages={this.state.pages}
+                                     firebase={this.state.firebase} userRef={this.state.userRef}/>
                     </div>
                 </div>
             </div>
@@ -40,9 +49,9 @@ class OptionsPageComponents extends React.Component {
  */
 function PageContent(props) {
     if (props.activePage === props.pages.DEFINITIONS) {
-        return <DefinitionsPage/>
+        return <DefinitionsPage firebase={props.firebase} userRef={props.userRef}/>
     } else if (props.activePage === props.pages.ADD_EXPENSES) {
-        return <AddExpensesPage/>
+        return <AddExpensesPage firebase={props.firebase} userRef={props.userRef}/>
     } else if (props.activePage === props.pages.SUPPORT) {
         return <SupportPage/>
     } else return null;
@@ -51,14 +60,56 @@ function PageContent(props) {
 class DefinitionsPage extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            defaultIncome: undefined,
+            fixedExpenses: []
+        }
+    }
+
+    setDefaultIncome() {
+        // this.props.firebase.on("value", (snapshot) => {
+        //     this.setState({defaultIncome: snapshot.child("users").child("u142652").child("income").val()});
+        // });
+        this.props.userRef.on("value", snapshot => {
+            this.setState({defaultIncome: snapshot.child("income").val()});
+        })
+    }
+
+    setIncome(value) {
+        return null;
+    }
+
+    componentDidMount() {
+        this.setDefaultIncome();
     }
 
     render() {
         return (
-            <div>
-                <h1>Insira sua renda mensal</h1>
+            <div id="definitions-page">
+                <IncomeForm defaultIncome={this.state.defaultIncome}/>
+                <FixedExpensesForm/>
             </div>
         )
+    }
+}
+
+class IncomeForm extends React.Component {
+    render() {
+        return (
+            <div id="income-form">
+                <h1>Insira sua renda mensal</h1>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span>R$ </span><input onBlur={(event) => console.log(event.target.value)}
+                                                               type="number" min="0.01" step="0.01"
+                                                               defaultValue={this.props.defaultIncome}/>
+            </div>
+        )
+    }
+}
+
+class FixedExpensesForm extends React.Component {
+    render() {
+        return null;
     }
 }
 

@@ -59,4 +59,26 @@
 
 #page-content h1 {
     color: black;
+    font-size: 30px;
+}
+
+#page-content span {
+    font-size: 18px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    width: 200px;
+    height: 30px;
+    font-size: 18px;
+    color: var(--default-text-color);
+    border-radius: 5px;
+    border: 1px solid var(--default-text-color);
+    padding-left: 7px;
+    outline: none;
 }
