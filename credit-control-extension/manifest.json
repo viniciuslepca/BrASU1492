@@ -56,6 +56,5 @@
   "background": {
     "page": "html/background.html"
   },
-  "options_page": "html/options.html",
   "permissions": ["notifications", "tabs"]
 }

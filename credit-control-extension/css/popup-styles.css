@@ -40,25 +40,26 @@ body::-webkit-scrollbar-track {
 #header {
     background-color: rgba(0,0,0,0.4);
     padding: 5px 0;
-    display: flex;
-    justify-content: space-between;
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    text-align: center;
 }
 
-#header button {
-    border-radius: 5px;
-    height: 100%;
-    margin: auto 5px auto 0;
-    padding: 4px;
-    background-color: transparent;
-    border: none;
-    transition: 0.2s;
-    outline: none;
-}
+/*#header button {*/
+/*    border-radius: 5px;*/
+/*    height: 100%;*/
+/*    margin: auto 5px auto 0;*/
+/*    padding: 4px;*/
+/*    background-color: transparent;*/
+/*    border: none;*/
+/*    transition: 0.2s;*/
+/*    outline: none;*/
+/*}*/
 
-#header button:hover {
-    cursor: pointer;
-    background-color: var(--main-purple);
-}
+/*#header button:hover {*/
+/*    cursor: pointer;*/
+/*    background-color: var(--main-purple);*/
+/*}*/
 
 #popup-body {
     margin: 12px;

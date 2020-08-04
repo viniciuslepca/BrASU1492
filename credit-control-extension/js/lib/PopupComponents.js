@@ -536,16 +536,7 @@ function PopupHeader() {
     return React.createElement(
         "div",
         { id: "header", style: { height: "40px" } },
-        React.createElement("div", { style: { width: "40px" } }),
-        React.createElement("img", { src: "../../images/logo-white.png", style: { height: "100%" }, alt: "Nubank Logo" }),
-        React.createElement(
-            "button",
-            { onClick: function onClick() {
-                    return chrome.runtime.openOptionsPage();
-                } },
-            React.createElement("img", { src: "../../images/settings.png",
-                title: "Configura\xE7\xF5es", alt: "Configura\xE7\xF5es" })
-        )
+        React.createElement("img", { src: "../../images/logo-white.png", style: { height: "100%" }, alt: "Nubank Logo" })
     );
 }
 
