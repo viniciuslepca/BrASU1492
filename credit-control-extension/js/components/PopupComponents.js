@@ -99,8 +99,11 @@ class InstallmentsPlot extends React.Component {
         const dataVals = this.props.bills;
         const recommendedLimit = parseFloat((0.3 * this.props.income).toFixed(2));
         let recLimLine = [];
+        const recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
+        const offsetFactor = recommendedLimitMultiplier * recommendedLimit;
         for (let i = 0; i < dataVals.length; i++) {
-            recLimLine.push((recommendedLimit / (i + 1.0)).toFixed(2));
+            const dataPoint = (recommendedLimit + offsetFactor * Math.log(i + 1)) / (i + 1.0);
+            recLimLine.push(dataPoint.toFixed(2));
         }
 
         // Define the expense ceiling line
@@ -371,6 +374,7 @@ class PopupStats extends React.Component {
         return (
             <div>
                 <h1 style={{textAlign: "center"}}>Você realmente precisa disso?</h1>
+                {/*<h1 style={{textAlign: "center"}}>Observe o impacto dessa compra nas suas finanças</h1>*/}
                 <p>Esse item representa {percentage}% da sua renda mensal</p>
             </div>
         );

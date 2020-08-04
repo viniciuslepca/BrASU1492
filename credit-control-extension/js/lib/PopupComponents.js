@@ -167,8 +167,11 @@ var InstallmentsPlot = function (_React$Component4) {
         var dataVals = _this4.props.bills;
         var recommendedLimit = parseFloat((0.3 * _this4.props.income).toFixed(2));
         var recLimLine = [];
+        var recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
+        var offsetFactor = recommendedLimitMultiplier * recommendedLimit;
         for (var i = 0; i < dataVals.length; i++) {
-            recLimLine.push((recommendedLimit / (i + 1.0)).toFixed(2));
+            var dataPoint = (recommendedLimit + offsetFactor * Math.log(i + 1)) / (i + 1.0);
+            recLimLine.push(dataPoint.toFixed(2));
         }
 
         // Define the expense ceiling line
