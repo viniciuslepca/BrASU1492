@@ -17,7 +17,7 @@ we developed based on expert opinions.
 - Full expenses visualization: this view takes the data from the installments view and includes the user's fixed monthly expenses,
 which are calculated using an algorithm we developed, to offer a more holistic view. 
 This time, the helper "limit line" shows the monthly expense ceiling for
-that user, which is based on their income and the saving goal defined by the user in the mobile version of Nu+.
+that user, which is based on their income and the saving goal defined by the user in the [mobile version of Nu+](https://github.com/cldelahan/nu_mais_mobile).
 
 The extension also recommends an optimal number of installments, which is calculated with our 
 [proprietary algorithm](https://github.com/viniciuslepca/BrASU1492/blob/master/Installment-Suggestion-Algorithm.pdf). 
@@ -49,7 +49,7 @@ auxiliar, que é criada a partir de uma fórmula especial que desenvolvemos de a
 - Visualização de todos os gastos: essa visualização usa os valores da visualização de parcelas e adiciona os gastos mensais fixos
 do usuário, que são calculados usando um algoritmo que desenvolvemos, para oferecer uma visão mais holística. Nesse caso, a "linha limite"
 auxiliar mostra o teto mensal de gastos para o usuário, que é calculado com base em sua renda e no objetivo de economia definido 
-pelo usuário na versão mobile do Nu+.
+pelo usuário na [versão mobile do Nu+](https://github.com/cldelahan/nu_mais_mobile).
  
 A extensão também recomenda um número otimizado de parcelas, que é calculado com o nosso 
 [algoritmo proprietário](https://github.com/viniciuslepca/BrASU1492/blob/master/Installment-Suggestion-Algorithm.pdf).
