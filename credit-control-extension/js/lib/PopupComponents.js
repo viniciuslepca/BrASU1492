@@ -103,7 +103,7 @@ var ContentComponents = function (_React$Component2) {
                 React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted,
                     predictedExpenses: this.props.predictedExpenses,
                     price: this.props.price, installments: this.state.installments,
-                    expenseCeiling: this.props.expenseCeiling,
+                    expenseCeiling: this.props.expenseCeiling, balance: this.props.balance,
                     income: this.props.income, bills: this.props.bills })
             );
         }
@@ -241,10 +241,15 @@ var InstallmentsPlot = function (_React$Component5) {
         // Set basic colors to be used
         var colors = _this6.defineBasicColors();
         // Define recommended maximum monthly expense (30% of income)
-        var dataVals = _this6.props.bills;
-        var recommendedLimit = parseFloat((0.3 * _this6.props.income).toFixed(2));
+        var dataVals = props.bills;
+        var recommendedLimit = parseFloat((0.3 * props.income).toFixed(2));
         var recLimLine = [];
-        var recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
+        // const recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
+        // Recommended multiplier is defined based on the relationship between available balance and monthly income
+        var balanceByIncome = props.balance * 1.0 / props.income;
+        var maxMultiplier = 2.0 / 3;
+        var recommendedLimitMultiplier = balanceByIncome >= maxMultiplier ? maxMultiplier : balanceByIncome;
+        console.log("multiplier: ", recommendedLimitMultiplier);
         var offsetFactor = recommendedLimitMultiplier * recommendedLimit;
         for (var i = 0; i < dataVals.length; i++) {
             var dataPoint = (recommendedLimit + offsetFactor * Math.log(i + 1)) / (i + 1.0);
@@ -284,6 +289,8 @@ var InstallmentsPlot = function (_React$Component5) {
             recLimLine: recLimLine,
             maximumInstallmentsLabel: 'Fatura máxima recomendada',
             expenseCeilingLabel: 'Limite de gastos mensais',
+            nextBillsLabel: 'Próximas faturas',
+            predictedBillsLabel: 'Faturas estimadas',
             expenseCeilingLine: expenseCeilingLine,
             chart: null
         };
@@ -423,16 +430,19 @@ var InstallmentsPlot = function (_React$Component5) {
             // Update future bills and recommended limit
             var newData = this.state.chart.data.datasets[0].data;
             var limitLine = null;
-            var label = null;
+            var billsLabel = null;
+            var limitLabel = null;
             if (this.props.includePredicted) {
                 limitLine = this.state.expenseCeilingLine;
-                label = this.state.expenseCeilingLabel;
+                limitLabel = this.state.expenseCeilingLabel;
+                billsLabel = this.state.predictedBillsLabel;
                 for (var i = 0; i < newData.length; i++) {
                     newData[i] = (parseFloat(newData[i]) + this.props.predictedExpenses).toFixed(2);
                 }
             } else {
                 limitLine = this.state.recLimLine;
-                label = this.state.maximumInstallmentsLabel;
+                limitLabel = this.state.maximumInstallmentsLabel;
+                billsLabel = this.state.nextBillsLabel;
                 for (var _i3 = 0; _i3 < newData.length; _i3++) {
                     newData[_i3] = (parseFloat(newData[_i3]) - this.props.predictedExpenses).toFixed(2);
                 }
@@ -447,8 +457,9 @@ var InstallmentsPlot = function (_React$Component5) {
             this.state.chart.data.datasets[0].data = newData;
             this.state.chart.data.datasets[0].backgroundColor = backgroundColors;
             this.state.chart.data.datasets[0].borderColor = borderColors;
+            this.state.chart.data.datasets[0].label = billsLabel;
             this.state.chart.data.datasets[1].data = limitLine;
-            this.state.chart.data.datasets[1].label = label;
+            this.state.chart.data.datasets[1].label = limitLabel;
             this.state.chart.update();
         }
     }, {
@@ -596,7 +607,7 @@ var PopupStats = function (_React$Component8) {
                 React.createElement(
                     "h1",
                     { style: { textAlign: "center" } },
-                    "Voc\xEA realmente precisa disso?"
+                    "Qual o impacto nas suas finan\xE7as?"
                 ),
                 React.createElement(
                     "p",

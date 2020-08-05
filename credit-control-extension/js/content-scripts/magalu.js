@@ -15,7 +15,7 @@ function runScript() {
     if (location.href.includes("/pagamento")) {
         const text = document.getElementsByClassName("OrderReviewTotal")[0].textContent;
         const priceStr = text.substr(0, text.indexOf(',')+3);
-        const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+        const priceVal = parseFloat(priceStr.replace(/[^0-9,]/g, '').replace(',', '.'));
 
         chrome.runtime.sendMessage({
             type: "getIncome"
@@ -62,7 +62,7 @@ function runScript() {
             if (request.type === "getPrice") {
                 const text = document.getElementsByClassName("OrderReviewTotal")[0].textContent;
                 const priceStr = text.substr(0, text.indexOf(',')+3);
-                const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+                const priceVal = parseFloat(priceStr.replace(/[^0-9,]/g, '').replace(',', '.'));
                 sendResponse({priceStr: priceStr, priceVal: priceVal});
             }
         });

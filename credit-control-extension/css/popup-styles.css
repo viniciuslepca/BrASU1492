@@ -7,7 +7,8 @@ body {
 
 h1 {
     color: var(--main-white);
-    margin: 6px;
+    margin: 6px 0;
+    font-size: 24px;
 }
 
 p {

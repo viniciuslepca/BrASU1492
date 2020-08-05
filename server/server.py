@@ -8,19 +8,23 @@ import copy
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/")
+def index():
+    return "<p>Server is working</p>"
+
 @app.route("/rec_installments", methods=["POST"])
 def get_rec_installments():
     data = request.get_json()
     purchase_price = data['price']
-    cash = data['balance']
+    balance = data['balance']
     income = data['income']
     bills = data['bills']
     expense_ceiling = data['expenseCeiling']
     predicted_expenses = data['predictedExpenses']
-    var = 0.15 * cash
+    var = 0.15 * balance
     n_months = 12
 
-    unsorted_recommendations = make_recommendation_list(cash, purchase_price, var, n_months)
+    unsorted_recommendations = make_recommendation_list(balance, purchase_price, var, n_months)
     # Create sorted list of tuples that includes the number of installments
     recommendations = []
     for index, prob in enumerate(unsorted_recommendations):
@@ -29,10 +33,12 @@ def get_rec_installments():
 
     # Make recommended limit line from income
     recommended_limit = 0.3 * income
-    offset_factor = recommended_limit / math.exp(1)
+    balance_by_income = balance / income
+    max_offset = 2 / 3
+    offset_factor = min(max_offset, balance_by_income)
     rec_limits = [0] * n_months
     for i in range(n_months):
-        rec_limits[i] = (recommended_limit + offset_factor * math.log(i + 1)) / (i + 1)
+        rec_limits[i] = (recommended_limit + offset_factor * recommended_limit * math.log(i + 1)) / (i + 1)
 
     # Find first recommendation that fits under the recommended limit
     rec_installments = 0
@@ -46,10 +52,6 @@ def get_rec_installments():
         'rec_installments': rec_installments
     }
 
-    # return_object = {
-    #     'rec_installments': (np.argmin(output) + 1).__int__()
-    # }
-
     return jsonify(return_object)
 
 def get_bills_with_current_purchase(price, bills, installments):
@@ -61,14 +63,12 @@ def get_bills_with_current_purchase(price, bills, installments):
 
 def fits_under_limit(bills, limit_line):
     for i in range(len(bills)):
-        print("recline", bills[i], limit_line[i])
         if bills[i] > limit_line[i]:
             return False
     return True
 
 def fits_under_expense_ceiling(bills, predicted_expenses, ceiling):
     for i in range(len(bills)):
-        print("ceiling", bills[i], ceiling)
         if bills[i] + predicted_expenses > ceiling:
             return False
     return True
@@ -81,6 +81,7 @@ def make_recommendation_list(cash, purchase_price, var, n_months):
 
     output = npp(np.arange(1, n_months))
     output[output>1] = 1
+    print(np.argmin(output) + 1)
     return output
 
 if __name__ == '__main__':

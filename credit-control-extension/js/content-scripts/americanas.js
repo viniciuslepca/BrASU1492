@@ -14,7 +14,7 @@ function myMain () {
 function runScript() {
     if (location.href.includes("/payment/")) {
         const priceStr = document.getElementsByClassName("summaryTotal-totalWithoutInstallment")[0].textContent;
-        const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+        const priceVal = parseFloat(priceStr.replace(/[^0-9,]/g, '').replace(',', '.'));
 
         chrome.runtime.sendMessage({
             type: "getIncome"
@@ -60,7 +60,7 @@ function runScript() {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if (request.type === "getPrice") {
                 const priceStr = document.getElementsByClassName("summaryTotal-totalWithoutInstallment")[0].textContent;
-                const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+                const priceVal = parseFloat(priceStr.replace(/[^0-9,]/g, '').replace(',', '.'));
                 sendResponse({priceStr: priceStr, priceVal: priceVal});
             }
         });

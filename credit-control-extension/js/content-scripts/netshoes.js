@@ -1,6 +1,6 @@
 if (location.href.includes("/checkout")) {
     const priceStr = document.getElementsByClassName("ns-w4  total-price-subtitle")[0].textContent;
-    const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+    const priceVal = parseFloat(priceStr.replace(/[^0-9,]/g, '').replace(',', '.'));
 
     chrome.runtime.sendMessage({
         type: "getIncome"
@@ -46,7 +46,7 @@ if (location.href.includes("/checkout")) {
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.type === "getPrice") {
             const priceStr = document.getElementsByClassName("ns-w4  total-price-subtitle")[0].textContent;
-            const priceVal = parseFloat(priceStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+            const priceVal = parseFloat(priceStr.replace(/[^0-9,]/g, '').replace(',', '.'));
             sendResponse({priceStr: priceStr, priceVal: priceVal});
         }
     });

@@ -61,7 +61,7 @@ class ContentComponents extends React.Component {
                 <InstallmentsPlot includePredicted={this.state.includePredicted}
                                   predictedExpenses={this.props.predictedExpenses}
                                   price={this.props.price} installments={this.state.installments}
-                                  expenseCeiling={this.props.expenseCeiling}
+                                  expenseCeiling={this.props.expenseCeiling} balance={this.props.balance}
                                   income={this.props.income} bills={this.props.bills}/>
             </div>
         )
@@ -144,10 +144,14 @@ class InstallmentsPlot extends React.Component {
         // Set basic colors to be used
         const colors = this.defineBasicColors();
         // Define recommended maximum monthly expense (30% of income)
-        const dataVals = this.props.bills;
-        const recommendedLimit = parseFloat((0.3 * this.props.income).toFixed(2));
+        const dataVals = props.bills;
+        const recommendedLimit = parseFloat((0.3 * props.income).toFixed(2));
         let recLimLine = [];
-        const recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
+        // const recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
+        // Recommended multiplier is defined based on the relationship between available balance and monthly income
+        const balanceByIncome = (props.balance * 1.0 ) / props.income;
+        const maxMultiplier = 2.0 / 3;
+        const recommendedLimitMultiplier = Math.min(maxMultiplier, balanceByIncome);
         const offsetFactor = recommendedLimitMultiplier * recommendedLimit;
         for (let i = 0; i < dataVals.length; i++) {
             const dataPoint = (recommendedLimit + offsetFactor * Math.log(i + 1)) / (i + 1.0);
@@ -181,6 +185,8 @@ class InstallmentsPlot extends React.Component {
             recLimLine: recLimLine,
             maximumInstallmentsLabel: 'Fatura máxima recomendada',
             expenseCeilingLabel: 'Limite de gastos mensais',
+            nextBillsLabel: 'Próximas faturas',
+            predictedBillsLabel: 'Faturas estimadas',
             expenseCeilingLine: expenseCeilingLine,
             chart: null
         };
@@ -310,16 +316,19 @@ class InstallmentsPlot extends React.Component {
         // Update future bills and recommended limit
         let newData = this.state.chart.data.datasets[0].data;
         let limitLine = null;
-        let label = null;
+        let billsLabel = null;
+        let limitLabel = null;
         if (this.props.includePredicted) {
             limitLine = this.state.expenseCeilingLine;
-            label = this.state.expenseCeilingLabel;
+            limitLabel = this.state.expenseCeilingLabel;
+            billsLabel = this.state.predictedBillsLabel;
             for (let i = 0; i < newData.length; i++) {
                 newData[i] = (parseFloat(newData[i]) + this.props.predictedExpenses).toFixed(2);
             }
         } else {
             limitLine = this.state.recLimLine;
-            label = this.state.maximumInstallmentsLabel;
+            limitLabel = this.state.maximumInstallmentsLabel;
+            billsLabel = this.state.nextBillsLabel;
             for (let i = 0; i < newData.length; i++) {
                 newData[i] = (parseFloat(newData[i]) - this.props.predictedExpenses).toFixed(2);
             }
@@ -330,8 +339,9 @@ class InstallmentsPlot extends React.Component {
         this.state.chart.data.datasets[0].data = newData;
         this.state.chart.data.datasets[0].backgroundColor = backgroundColors;
         this.state.chart.data.datasets[0].borderColor = borderColors;
+        this.state.chart.data.datasets[0].label = billsLabel;
         this.state.chart.data.datasets[1].data = limitLine;
-        this.state.chart.data.datasets[1].label = label;
+        this.state.chart.data.datasets[1].label = limitLabel;
         this.state.chart.update();
     }
 
@@ -421,8 +431,8 @@ class PopupStats extends React.Component {
         const percentage = ((this.props.price / this.props.income) * 100).toFixed(1);
         return (
             <div>
-                <h1 style={{textAlign: "center"}}>Você realmente precisa disso?</h1>
-                {/*<h1 style={{textAlign: "center"}}>Observe o impacto dessa compra nas suas finanças</h1>*/}
+                {/*<h1 style={{textAlign: "center"}}>Você realmente precisa disso?</h1>*/}
+                <h1 style={{textAlign: "center"}}>Qual o impacto nas suas finanças?</h1>
                 <p>Esse item representa {percentage}% da sua renda mensal</p>
             </div>
         );
