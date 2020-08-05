@@ -14,6 +14,7 @@ class PopupComponents extends React.Component {
                         <PopupStats price={this.props.priceVal} income={this.state.bg.income}/>
                         <ItemPrice price={this.props.priceStr}/>
                         <ContentComponents price={this.props.priceVal} income={this.state.bg.income}
+                                           balance={this.state.bg.balance}
                                            bills={this.state.bg.bills} expenseCeiling={this.state.bg.expenseCeiling}
                                            predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
                         <LearnMore educationalFacts={this.state.bg.educationalFacts}/>
@@ -52,6 +53,10 @@ class ContentComponents extends React.Component {
             <div>
                 <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)}
                                       predictedExpenses={this.props.predictedExpenses}/>
+                <RecommendedInstallments price={this.props.price} balance={this.props.balance}
+                                         income={this.props.income} bills={this.props.bills}
+                                         expenseCeiling={this.props.expenseCeiling}
+                                         predictedExpenses={this.props.predictedExpenses}/>
                 <InstallmentsSlider setInstallments={this.setInstallments.bind(this)} price={this.props.price}/>
                 <InstallmentsPlot includePredicted={this.state.includePredicted}
                                   predictedExpenses={this.props.predictedExpenses}
@@ -60,6 +65,49 @@ class ContentComponents extends React.Component {
                                   income={this.props.income} bills={this.props.bills}/>
             </div>
         )
+    }
+}
+
+class RecommendedInstallments extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            recommendedInstallments: null
+        }
+    }
+
+    getRecommendedInstallmentsFromServer() {
+        const apiUrl = "http://127.0.0.1:5000/rec_installments";
+        fetch(apiUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                price: this.props.price,
+                balance: this.props.balance,
+                income: this.props.income,
+                bills: this.props.bills,
+                expenseCeiling: this.props.expenseCeiling,
+                predictedExpenses: this.props.predictedExpenses
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json())
+            .then(data => this.setState({recommendedInstallments: data.rec_installments}))
+    }
+
+    componentDidMount() {
+        this.getRecommendedInstallmentsFromServer();
+    }
+
+    render() {
+        if (this.state.recommendedInstallments === null) return null;
+
+        if (this.state.recommendedInstallments === 0) {
+            return <h3>Talvez agora não seja o melhor momento para essa compra!</h3>
+        }
+
+        return <h3>Nosso algoritmo recomenda parcelar essa compra
+            em {this.state.recommendedInstallments} vez{this.state.recommendedInstallments > 1 ? "es" : null}!</h3>
     }
 }
 
@@ -321,7 +369,7 @@ class InstallmentsPlot extends React.Component {
     render() {
         return (
             <div className="center content-box plot-area">
-                <canvas id="myChart" width="400" height="400"/>
+                <canvas id="myChart"/>
             </div>
         );
     }

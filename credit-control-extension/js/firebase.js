@@ -44,6 +44,7 @@ function getMonthlyExpenses () {
     let amt_fixed = 0;
     ref.on("value", function(snapshot) {
         let income = snapshot.child("users").child("u142652").child("income").val();
+        window.balance = snapshot.child("users").child("u142652").child("balance").val();
         let t_ids = Object.keys(snapshot.child("users").child("u142652").child("transactions").val());
         // handled in backend
         for (let d = 0; d < 12; d++) {

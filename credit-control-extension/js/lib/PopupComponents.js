@@ -35,6 +35,7 @@ var PopupComponents = function (_React$Component) {
                         React.createElement(PopupStats, { price: this.props.priceVal, income: this.state.bg.income }),
                         React.createElement(ItemPrice, { price: this.props.priceStr }),
                         React.createElement(ContentComponents, { price: this.props.priceVal, income: this.state.bg.income,
+                            balance: this.state.bg.balance,
                             bills: this.state.bg.bills, expenseCeiling: this.state.bg.expenseCeiling,
                             predictedExpenses: parseFloat(this.state.bg.predictedExpenses.toFixed(2)) }),
                         React.createElement(LearnMore, { educationalFacts: this.state.bg.educationalFacts })
@@ -94,6 +95,10 @@ var ContentComponents = function (_React$Component2) {
                 null,
                 React.createElement(PredictedBillsSwitch, { setIncludePredicted: this.setIncludePredicted.bind(this),
                     predictedExpenses: this.props.predictedExpenses }),
+                React.createElement(RecommendedInstallments, { price: this.props.price, balance: this.props.balance,
+                    income: this.props.income, bills: this.props.bills,
+                    expenseCeiling: this.props.expenseCeiling,
+                    predictedExpenses: this.props.predictedExpenses }),
                 React.createElement(InstallmentsSlider, { setInstallments: this.setInstallments.bind(this), price: this.props.price }),
                 React.createElement(InstallmentsPlot, { includePredicted: this.state.includePredicted,
                     predictedExpenses: this.props.predictedExpenses,
@@ -107,16 +112,88 @@ var ContentComponents = function (_React$Component2) {
     return ContentComponents;
 }(React.Component);
 
-var PredictedBillsSwitch = function (_React$Component3) {
-    _inherits(PredictedBillsSwitch, _React$Component3);
+var RecommendedInstallments = function (_React$Component3) {
+    _inherits(RecommendedInstallments, _React$Component3);
+
+    function RecommendedInstallments(props) {
+        _classCallCheck(this, RecommendedInstallments);
+
+        var _this3 = _possibleConstructorReturn(this, (RecommendedInstallments.__proto__ || Object.getPrototypeOf(RecommendedInstallments)).call(this, props));
+
+        _this3.state = {
+            recommendedInstallments: null
+        };
+        return _this3;
+    }
+
+    _createClass(RecommendedInstallments, [{
+        key: "getRecommendedInstallmentsFromServer",
+        value: function getRecommendedInstallmentsFromServer() {
+            var _this4 = this;
+
+            var apiUrl = "http://127.0.0.1:5000/rec_installments";
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    price: this.props.price,
+                    balance: this.props.balance,
+                    income: this.props.income,
+                    bills: this.props.bills,
+                    expenseCeiling: this.props.expenseCeiling,
+                    predictedExpenses: this.props.predictedExpenses
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                return _this4.setState({ recommendedInstallments: data.rec_installments });
+            });
+        }
+    }, {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            this.getRecommendedInstallmentsFromServer();
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            if (this.state.recommendedInstallments === null) return null;
+
+            if (this.state.recommendedInstallments === 0) {
+                return React.createElement(
+                    "h3",
+                    null,
+                    "Talvez agora n\xE3o seja o melhor momento para essa compra!"
+                );
+            }
+
+            return React.createElement(
+                "h3",
+                null,
+                "Nosso algoritmo recomenda parcelar essa compra em ",
+                this.state.recommendedInstallments,
+                " vez",
+                this.state.recommendedInstallments > 1 ? "es" : null,
+                "!"
+            );
+        }
+    }]);
+
+    return RecommendedInstallments;
+}(React.Component);
+
+var PredictedBillsSwitch = function (_React$Component4) {
+    _inherits(PredictedBillsSwitch, _React$Component4);
 
     function PredictedBillsSwitch(props) {
         _classCallCheck(this, PredictedBillsSwitch);
 
-        var _this3 = _possibleConstructorReturn(this, (PredictedBillsSwitch.__proto__ || Object.getPrototypeOf(PredictedBillsSwitch)).call(this, props));
+        var _this5 = _possibleConstructorReturn(this, (PredictedBillsSwitch.__proto__ || Object.getPrototypeOf(PredictedBillsSwitch)).call(this, props));
 
-        _this3.handleChange = _this3.handleChange.bind(_this3);
-        return _this3;
+        _this5.handleChange = _this5.handleChange.bind(_this5);
+        return _this5;
     }
 
     _createClass(PredictedBillsSwitch, [{
@@ -151,21 +228,21 @@ var PredictedBillsSwitch = function (_React$Component3) {
     return PredictedBillsSwitch;
 }(React.Component);
 
-var InstallmentsPlot = function (_React$Component4) {
-    _inherits(InstallmentsPlot, _React$Component4);
+var InstallmentsPlot = function (_React$Component5) {
+    _inherits(InstallmentsPlot, _React$Component5);
 
     function InstallmentsPlot(props) {
         _classCallCheck(this, InstallmentsPlot);
 
         // Set month information based on current month
-        var _this4 = _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).call(this, props));
+        var _this6 = _possibleConstructorReturn(this, (InstallmentsPlot.__proto__ || Object.getPrototypeOf(InstallmentsPlot)).call(this, props));
 
-        var monthData = _this4.defineMonthList();
+        var monthData = _this6.defineMonthList();
         // Set basic colors to be used
-        var colors = _this4.defineBasicColors();
+        var colors = _this6.defineBasicColors();
         // Define recommended maximum monthly expense (30% of income)
-        var dataVals = _this4.props.bills;
-        var recommendedLimit = parseFloat((0.3 * _this4.props.income).toFixed(2));
+        var dataVals = _this6.props.bills;
+        var recommendedLimit = parseFloat((0.3 * _this6.props.income).toFixed(2));
         var recLimLine = [];
         var recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
         var offsetFactor = recommendedLimitMultiplier * recommendedLimit;
@@ -189,15 +266,15 @@ var InstallmentsPlot = function (_React$Component4) {
         }
         // Set bar colors based on whether they're lower or higher than recommended
 
-        var _this4$setColors = _this4.setColors(displayData, recLimLine, colors),
-            _this4$setColors2 = _slicedToArray(_this4$setColors, 2),
-            backgroundColors = _this4$setColors2[0],
-            borderColors = _this4$setColors2[1];
+        var _this6$setColors = _this6.setColors(displayData, recLimLine, colors),
+            _this6$setColors2 = _slicedToArray(_this6$setColors, 2),
+            backgroundColors = _this6$setColors2[0],
+            borderColors = _this6$setColors2[1];
 
         // Record everything in the state
 
 
-        _this4.state = {
+        _this6.state = {
             months: monthData,
             dataVals: dataVals,
             displayData: displayData,
@@ -210,7 +287,7 @@ var InstallmentsPlot = function (_React$Component4) {
             expenseCeilingLine: expenseCeilingLine,
             chart: null
         };
-        return _this4;
+        return _this6;
     }
 
     _createClass(InstallmentsPlot, [{
@@ -411,7 +488,7 @@ var InstallmentsPlot = function (_React$Component4) {
             return React.createElement(
                 "div",
                 { className: "center content-box plot-area" },
-                React.createElement("canvas", { id: "myChart", width: "400", height: "400" })
+                React.createElement("canvas", { id: "myChart" })
             );
         }
     }]);
@@ -419,17 +496,17 @@ var InstallmentsPlot = function (_React$Component4) {
     return InstallmentsPlot;
 }(React.Component);
 
-var InstallmentsSlider = function (_React$Component5) {
-    _inherits(InstallmentsSlider, _React$Component5);
+var InstallmentsSlider = function (_React$Component6) {
+    _inherits(InstallmentsSlider, _React$Component6);
 
     function InstallmentsSlider(props) {
         _classCallCheck(this, InstallmentsSlider);
 
-        var _this5 = _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).call(this, props));
+        var _this7 = _possibleConstructorReturn(this, (InstallmentsSlider.__proto__ || Object.getPrototypeOf(InstallmentsSlider)).call(this, props));
 
-        _this5.state = { installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.', ',') };
-        _this5.handleChange = _this5.handleChange.bind(_this5);
-        return _this5;
+        _this7.state = { installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.', ',') };
+        _this7.handleChange = _this7.handleChange.bind(_this7);
+        return _this7;
     }
 
     _createClass(InstallmentsSlider, [{
@@ -444,7 +521,7 @@ var InstallmentsSlider = function (_React$Component5) {
     }, {
         key: "render",
         value: function render() {
-            var _this6 = this;
+            var _this8 = this;
 
             return React.createElement(
                 "div",
@@ -459,7 +536,7 @@ var InstallmentsSlider = function (_React$Component5) {
                 ),
                 React.createElement("input", { type: "range", min: "1", max: "12", defaultValue: "1", className: "slider", id: "installments-slider",
                     onChange: function onChange(event) {
-                        return _this6.handleChange(event);
+                        return _this8.handleChange(event);
                     } })
             );
         }
@@ -468,8 +545,8 @@ var InstallmentsSlider = function (_React$Component5) {
     return InstallmentsSlider;
 }(React.Component);
 
-var ItemPrice = function (_React$Component6) {
-    _inherits(ItemPrice, _React$Component6);
+var ItemPrice = function (_React$Component7) {
+    _inherits(ItemPrice, _React$Component7);
 
     function ItemPrice() {
         _classCallCheck(this, ItemPrice);
@@ -500,8 +577,8 @@ var ItemPrice = function (_React$Component6) {
     return ItemPrice;
 }(React.Component);
 
-var PopupStats = function (_React$Component7) {
-    _inherits(PopupStats, _React$Component7);
+var PopupStats = function (_React$Component8) {
+    _inherits(PopupStats, _React$Component8);
 
     function PopupStats(props) {
         _classCallCheck(this, PopupStats);
@@ -543,8 +620,8 @@ function PopupHeader() {
     );
 }
 
-var LearnMore = function (_React$Component8) {
-    _inherits(LearnMore, _React$Component8);
+var LearnMore = function (_React$Component9) {
+    _inherits(LearnMore, _React$Component9);
 
     function LearnMore(props) {
         _classCallCheck(this, LearnMore);
