@@ -7,14 +7,16 @@ class PopupComponents extends React.Component {
 
     render() {
         if (this.props.priceStr !== null) {
-            return(
+            return (
                 <div>
                     <PopupHeader/>
                     <div id="popup-body">
                         <PopupStats price={this.props.priceVal} income={this.state.bg.income}/>
                         <ItemPrice price={this.props.priceStr}/>
                         <ContentComponents price={this.props.priceVal} income={this.state.bg.income}
-                                           bills={this.state.bg.bills} predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
+                                           balance={this.state.bg.balance}
+                                           bills={this.state.bg.bills} expenseCeiling={this.state.bg.expenseCeiling}
+                                           predictedExpenses={parseFloat(this.state.bg.predictedExpenses.toFixed(2))}/>
                         <LearnMore educationalFacts={this.state.bg.educationalFacts}/>
                     </div>
                 </div>
@@ -49,12 +51,63 @@ class ContentComponents extends React.Component {
     render() {
         return (
             <div>
-                <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)} predictedExpenses={this.props.predictedExpenses}/>
+                <PredictedBillsSwitch setIncludePredicted={this.setIncludePredicted.bind(this)}
+                                      predictedExpenses={this.props.predictedExpenses}/>
+                <RecommendedInstallments price={this.props.price} balance={this.props.balance}
+                                         income={this.props.income} bills={this.props.bills}
+                                         expenseCeiling={this.props.expenseCeiling}
+                                         predictedExpenses={this.props.predictedExpenses}/>
                 <InstallmentsSlider setInstallments={this.setInstallments.bind(this)} price={this.props.price}/>
-                <InstallmentsPlot includePredicted={this.state.includePredicted} predictedExpenses={this.props.predictedExpenses}
-                            price={this.props.price} installments={this.state.installments} income={this.props.income} bills={this.props.bills}/>
+                <InstallmentsPlot includePredicted={this.state.includePredicted}
+                                  predictedExpenses={this.props.predictedExpenses}
+                                  price={this.props.price} installments={this.state.installments}
+                                  expenseCeiling={this.props.expenseCeiling}
+                                  income={this.props.income} bills={this.props.bills}/>
             </div>
         )
+    }
+}
+
+class RecommendedInstallments extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            recommendedInstallments: null
+        }
+    }
+
+    getRecommendedInstallmentsFromServer() {
+        const apiUrl = "http://127.0.0.1:5000/rec_installments";
+        fetch(apiUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                price: this.props.price,
+                balance: this.props.balance,
+                income: this.props.income,
+                bills: this.props.bills,
+                expenseCeiling: this.props.expenseCeiling,
+                predictedExpenses: this.props.predictedExpenses
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json())
+            .then(data => this.setState({recommendedInstallments: data.rec_installments}))
+    }
+
+    componentDidMount() {
+        this.getRecommendedInstallmentsFromServer();
+    }
+
+    render() {
+        if (this.state.recommendedInstallments === null) return null;
+
+        if (this.state.recommendedInstallments === 0) {
+            return <h3>Talvez agora não seja o melhor momento para essa compra!</h3>
+        }
+
+        return <h3>Nosso algoritmo recomenda parcelar essa compra
+            em {this.state.recommendedInstallments} vez{this.state.recommendedInstallments > 1 ? "es" : null}!</h3>
     }
 }
 
@@ -87,6 +140,53 @@ class InstallmentsPlot extends React.Component {
     constructor(props) {
         super(props);
         // Set month information based on current month
+        const monthData = this.defineMonthList();
+        // Set basic colors to be used
+        const colors = this.defineBasicColors();
+        // Define recommended maximum monthly expense (30% of income)
+        const dataVals = this.props.bills;
+        const recommendedLimit = parseFloat((0.3 * this.props.income).toFixed(2));
+        let recLimLine = [];
+        const recommendedLimitMultiplier = 1.0 / Math.exp(1); // Has to be <= 2/3
+        const offsetFactor = recommendedLimitMultiplier * recommendedLimit;
+        for (let i = 0; i < dataVals.length; i++) {
+            const dataPoint = (recommendedLimit + offsetFactor * Math.log(i + 1)) / (i + 1.0);
+            recLimLine.push(dataPoint.toFixed(2));
+        }
+
+        // Define the expense ceiling line
+        const expenseCeilingLine = Array(dataVals.length).fill(props.expenseCeiling);
+
+        // Include price of the item in 1 installment for first render
+        let displayData = [];
+        for (let i = 0; i < dataVals.length; i++) {
+            if (i === 0) {
+                // Assuming the initial state is a single installment
+                displayData.push((dataVals[i] + props.price).toFixed(2));
+            } else {
+                displayData.push(dataVals[i].toFixed(2));
+            }
+        }
+        // Set bar colors based on whether they're lower or higher than recommended
+        const [backgroundColors, borderColors] = this.setColors(displayData, recLimLine, colors);
+
+        // Record everything in the state
+        this.state = {
+            months: monthData,
+            dataVals: dataVals,
+            displayData: displayData,
+            colors: colors,
+            backgroundColors: backgroundColors,
+            borderColors: borderColors,
+            recLimLine: recLimLine,
+            maximumInstallmentsLabel: 'Fatura máxima recomendada',
+            expenseCeilingLabel: 'Limite de gastos mensais',
+            expenseCeilingLine: expenseCeilingLine,
+            chart: null
+        };
+    }
+
+    defineMonthList() {
         const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
         let monthData = [];
         const now = new Date();
@@ -96,8 +196,10 @@ class InstallmentsPlot extends React.Component {
         for (let i = 0; i < now.getMonth(); i++) {
             monthData.push(months[i]);
         }
+        return monthData;
+    }
 
-        const dataVals = this.props.bills;
+    defineBasicColors() {
         // Set basic colors for the plot
         const fillGreen = "rgba(147, 196, 45, 0.5)";
         const borderGreen = "rgba(147, 196, 45, 1)";
@@ -107,51 +209,16 @@ class InstallmentsPlot extends React.Component {
         const borderBlack = "rgba(61, 61, 61, 1)";
         const opaquePurple = "rgba(158, 27, 209, 1)";
         const transparentPurple = "rgba(158, 27, 209, 0.2)";
-        const colors = {fillGreen: fillGreen, borderGreen: borderGreen, fillRed: fillRed, borderRed: borderRed,
-            fillBlack: fillBlack, borderBlack: borderBlack, opaquePurple: opaquePurple, transparentPurple: transparentPurple};
-        // Define recommended maximum monthly expense (30% of income)
-        const recommendedLimit = parseFloat((0.3 * this.props.income).toFixed(2));
-        let recLimLine = [];
-        for (let i = 0; i < dataVals.length; i++) {
-            recLimLine.push(recommendedLimit);
-        }
-        // Define the credit limit (70% of income)
-        // TODO - pull actual value from database
-        const creditLimit = parseFloat((1 * this.props.income).toFixed(2));
-        let creditLimitLine = [];
-        for (let i = 0; i < dataVals.length; i++) {
-            creditLimitLine.push(creditLimit);
-        }
-        // Include price of the item in 1 installment for first render
-        let displayData = [];
-        for (let i = 0; i < dataVals.length; i++) {
-            if (i === 0) {
-                // Assuming the initial state is a single installment
-                displayData.push(dataVals[i] + props.price);
-            } else {
-                displayData.push(dataVals[i]);
-            }
-        }
-        // Set bar colors based on whether they're lower or higher than recommended
-        let backgroundColors = [];
-        let borderColors = [];
-        for (let i = 0; i < displayData.length; i++) {
-            if (displayData[i] >= creditLimit) {
-                backgroundColors.push(colors.fillBlack);
-                borderColors.push(colors.borderBlack);
-            } else if (displayData[i] >= recommendedLimit) {
-                backgroundColors.push(colors.fillRed);
-                borderColors.push(colors.borderRed);
-            } else {
-                backgroundColors.push(colors.fillGreen);
-                borderColors.push(colors.borderGreen);
-            }
-        }
-
-        // Record everything in the state
-        this.state = {months: monthData, dataVals: dataVals, displayData: displayData, colors: colors,
-            backgroundColors: backgroundColors, borderColors: borderColors, recommendedLimit: recommendedLimit,
-            recLimLine: recLimLine, creditLimit: creditLimit, creditLimitLine: creditLimitLine, chart: null};
+        return {
+            fillGreen: fillGreen,
+            borderGreen: borderGreen,
+            fillRed: fillRed,
+            borderRed: borderRed,
+            fillBlack: fillBlack,
+            borderBlack: borderBlack,
+            opaquePurple: opaquePurple,
+            transparentPurple: transparentPurple
+        };
     }
 
     componentDidMount() {
@@ -168,25 +235,16 @@ class InstallmentsPlot extends React.Component {
                     borderColor: this.state.borderColors,
                     borderWidth: 1,
                 }, {
-                    label: 'Fatura máxima recomendada',
+                    label: this.state.maximumInstallmentsLabel,
                     data: this.state.recLimLine,
                     backgroundColor: "rgba(0,0,0,0)",
                     borderColor: this.state.colors.fillBlack,
                     borderDash: [15, 5],
                     borderWidth: 1.5,
-                    pointRadius: 0,
+                    pointRadius: 2,
+                    pointHitRadius: 3,
                     type: 'line'
-                }, {
-                    label: 'Limite do cartão',
-                    data: this.state.creditLimitLine,
-                    backgroundColor: "rgba(0,0,0,0)",
-                    borderColor: this.state.colors.fillRed,
-                    borderDash: [15, 5],
-                    borderWidth: 1.5,
-                    pointRadius: 0,
-                    type: 'line'
-                }
-                ]
+                }]
             },
             options: {
                 scales: {
@@ -233,19 +291,16 @@ class InstallmentsPlot extends React.Component {
         }
     }
 
-    setColors(newData, recommendedLimit) {
+    setColors(newData, recommendedLimits, colors = this.state.colors) {
         let backgroundColors = [];
         let borderColors = [];
         for (let i = 0; i < newData.length; i++) {
-            if (newData[i] >= this.state.creditLimit) {
-                backgroundColors.push(this.state.colors.fillBlack);
-                borderColors.push(this.state.colors.borderBlack);
-            } else if (newData[i] >= recommendedLimit) {
-                backgroundColors.push(this.state.colors.fillRed);
-                borderColors.push(this.state.colors.borderRed);
+            if (newData[i] >= parseFloat(recommendedLimits[i])) {
+                backgroundColors.push(colors.fillRed);
+                borderColors.push(colors.borderRed);
             } else {
-                backgroundColors.push(this.state.colors.fillGreen);
-                borderColors.push(this.state.colors.borderGreen);
+                backgroundColors.push(colors.fillGreen);
+                borderColors.push(colors.borderGreen);
             }
         }
         return [backgroundColors, borderColors];
@@ -254,28 +309,29 @@ class InstallmentsPlot extends React.Component {
     updateIncludePredicted() {
         // Update future bills and recommended limit
         let newData = this.state.chart.data.datasets[0].data;
-        let newRecLim = this.state.chart.data.datasets[1].data;
-        let recLim = this.state.recommendedLimit;
+        let limitLine = null;
+        let label = null;
         if (this.props.includePredicted) {
+            limitLine = this.state.expenseCeilingLine;
+            label = this.state.expenseCeilingLabel;
             for (let i = 0; i < newData.length; i++) {
-                newData[i] += this.props.predictedExpenses;
-                newRecLim[i] += this.props.predictedExpenses;
+                newData[i] = (parseFloat(newData[i]) + this.props.predictedExpenses).toFixed(2);
             }
-            recLim += this.props.predictedExpenses;
         } else {
+            limitLine = this.state.recLimLine;
+            label = this.state.maximumInstallmentsLabel;
             for (let i = 0; i < newData.length; i++) {
-                newData[i] -= this.props.predictedExpenses;
-                newRecLim[i] -= this.props.predictedExpenses;
+                newData[i] = (parseFloat(newData[i]) - this.props.predictedExpenses).toFixed(2);
             }
         }
         // Update colors
-        const colorResults = this.setColors(newData, recLim);
-        const backgroundColors = colorResults[0];
-        const borderColors = colorResults[1];
+        const [backgroundColors, borderColors] = this.setColors(newData, limitLine);
 
         this.state.chart.data.datasets[0].data = newData;
         this.state.chart.data.datasets[0].backgroundColor = backgroundColors;
         this.state.chart.data.datasets[0].borderColor = borderColors;
+        this.state.chart.data.datasets[1].data = limitLine;
+        this.state.chart.data.datasets[1].label = label;
         this.state.chart.update();
     }
 
@@ -296,9 +352,10 @@ class InstallmentsPlot extends React.Component {
         monthlyInstallment = parseFloat(monthlyInstallment.toFixed(2)); // 2 decimal places
         for (let i = 0; i < this.props.installments; i++) {
             newData[i] += monthlyInstallment;
+            newData[i] = newData[i].toFixed(2);
         }
         // Update colors
-        const colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data[0]);
+        const colorResults = this.setColors(newData, this.state.chart.data.datasets[1].data);
         const backgroundColors = colorResults[0];
         const borderColors = colorResults[1];
 
@@ -312,7 +369,7 @@ class InstallmentsPlot extends React.Component {
     render() {
         return (
             <div className="center content-box plot-area">
-                <canvas id="myChart" width="400" height="400"/>
+                <canvas id="myChart"/>
             </div>
         );
     }
@@ -321,23 +378,25 @@ class InstallmentsPlot extends React.Component {
 class InstallmentsSlider extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.',',')};
+        this.state = {installments: 1, monthlyInstallment: props.price.toFixed(2).replace('.', ',')};
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange() {
         const installments = document.getElementById("installments-slider").value;
         let monthlyInstallment = this.props.price / installments;
-        monthlyInstallment = monthlyInstallment.toFixed(2).replace('.',',');
+        monthlyInstallment = monthlyInstallment.toFixed(2).replace('.', ',');
         this.setState({installments: installments, monthlyInstallment: monthlyInstallment});
         this.props.setInstallments(installments);
     }
 
     render() {
-        return(
+        return (
             <div className="slide-container">
-                <p style={{marginBottom: 0, textAlign: "center"}}>Quero fazer essa compra em {this.state.installments}X de R${this.state.monthlyInstallment}</p>
-                <input type="range" min="1" max="12" defaultValue="1" className="slider" id="installments-slider" onChange={(event)=>this.handleChange(event)}/>
+                <p style={{marginBottom: 0, textAlign: "center"}}>Quero fazer essa compra em {this.state.installments}X
+                    de R${this.state.monthlyInstallment}</p>
+                <input type="range" min="1" max="12" defaultValue="1" className="slider" id="installments-slider"
+                       onChange={(event) => this.handleChange(event)}/>
             </div>
         );
     }
@@ -363,6 +422,7 @@ class PopupStats extends React.Component {
         return (
             <div>
                 <h1 style={{textAlign: "center"}}>Você realmente precisa disso?</h1>
+                {/*<h1 style={{textAlign: "center"}}>Observe o impacto dessa compra nas suas finanças</h1>*/}
                 <p>Esse item representa {percentage}% da sua renda mensal</p>
             </div>
         );
@@ -371,8 +431,12 @@ class PopupStats extends React.Component {
 
 function PopupHeader() {
     return (
-        <div id="header">
-            <img src="../../images/logo-white.png" height="40" alt="Nubank Logo" className="center"/>
+        <div id="header" style={{height: "40px"}}>
+            {/*<div style={{width: "40px"}}/>*/}
+            <img src="../../images/logo-white.png" style={{height: "100%"}} alt="Nubank Logo"/>
+            {/*<button onClick={() => chrome.runtime.openOptionsPage()}><img src="../../images/settings.png"*/}
+            {/*                                                              title="Configurações" alt="Configurações"/>*/}
+            {/*</button>*/}
         </div>
     );
 }
