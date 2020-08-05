@@ -1,4 +1,4 @@
-# Nubank+ Chrome Extension
+# Nu+ Chrome Extension
 **EN-US:** Nu+ is a Google Chrome extension meant to assist Nubank's customers 
 in online shopping. Our main goal is to provide customers with more control over their
 personal finances by tackling two main issues:
