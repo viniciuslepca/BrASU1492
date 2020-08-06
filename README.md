@@ -20,7 +20,7 @@ This time, the helper "limit line" shows the monthly expense ceiling for
 that user, which is based on their income and the saving goal defined by the user in the [mobile version of Nu+](https://github.com/cldelahan/nu_mais_mobile).
 
 The extension also recommends an optimal number of installments, which is calculated with our 
-[proprietary algorithm](https://github.com/viniciuslepca/BrASU1492/blob/master/Installment-Suggestion-Algorithm.pdf). 
+proprietary algorithm. 
 It combines:
 - the volatility of the market by using a Brownian Motion to analyze the risk of assuming future debt
 - specialist recommendations of keeping installments under 30% of your income (weighed over time)
@@ -52,7 +52,7 @@ auxiliar mostra o teto mensal de gastos para o usuário, que é calculado com ba
 pelo usuário na [versão mobile do Nu+](https://github.com/cldelahan/nu_mais_mobile).
  
 A extensão também recomenda um número otimizado de parcelas, que é calculado com o nosso 
-[algoritmo proprietário](https://github.com/viniciuslepca/BrASU1492/blob/master/Installment-Suggestion-Algorithm.pdf).
+algoritmo proprietário.
 Ele combina:
 - a volatilidade do mercado, utilizando movimento Browniano para analisar o risco de assumir dívidas futuras
 - recomendações de especialistas par manter o valor total de parcelas abaixo de 30% da sua renda mensal (ponderado pelo tempo)
