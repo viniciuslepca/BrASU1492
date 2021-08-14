@@ -30,7 +30,7 @@ The last section provides educational statistics to encourage the user to make b
 
 All financial transactions are simulated in a Realtime Firebase database.
 
-This project was developed by team BrASU1492 for BRASA Hacks 2020.
+This project was developed by team BrASU1492 for BRASA Hacks 2020. [Final demo (in Portuguese)](https://www.youtube.com/watch?v=2zfblKtIoP8&ab_channel=Vin%C3%ADciusLepca)
 
 **PT-BR:** Nu+ é uma extensão para Google Chrome que busca auxiliar clientes da Nubank 
 em compras online. Nosso principal objetivo é oferecer aos clientes mais controle sobre suas 
@@ -62,7 +62,7 @@ A última seção mostra estatísticas educacionais para estimular o usuário a 
 
 As transações financeiras são simuladas em uma base de dados Realtime Firebase.
 
-Esse projeto foi desenvolvido pelo time BrASU1492 para a BRASA Hacks 2020.
+Esse projeto foi desenvolvido pelo time BrASU1492 para a BRASA Hacks 2020. [Demonstração Final (em português)](https://www.youtube.com/watch?v=2zfblKtIoP8&ab_channel=Vin%C3%ADciusLepca)
 
 ## Usage / Uso
 **EN-US:**
